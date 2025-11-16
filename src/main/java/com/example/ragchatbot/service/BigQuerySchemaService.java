@@ -1,23 +1,21 @@
 package com.example.ragchatbot.service;
 
-import com.google.cloud.bigquery.BigQuery;
-import com.google.cloud.bigquery.BigQueryOptions;
-import com.google.cloud.bigquery.Dataset;
-import com.google.cloud.bigquery.DatasetId;
-import com.google.cloud.bigquery.Table;
-import com.google.cloud.bigquery.TableId;
-import com.google.cloud.bigquery.TableDefinition;
-import com.google.cloud.bigquery.StandardTableDefinition;
-import com.google.cloud.bigquery.Field;
-import com.google.cloud.bigquery.Schema;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 @Service
 public class BigQuerySchemaService {
+
+    private static final Logger logger = LoggerFactory.getLogger(BigQuerySchemaService.class);
 
     @Value("${gcp.bigquery.dataset}")
     private String datasetName;
@@ -25,16 +23,25 @@ public class BigQuerySchemaService {
     @Value("${gcp.bigquery.schema}")
     private String schemaName;
 
-    private BigQuery bigQuery;
+    private final ObjectMapper objectMapper;
     private String cachedSchemaContext;
 
     public BigQuerySchemaService() {
-        this.bigQuery = BigQueryOptions.getDefaultInstance().getService();
+        logger.info("Initializing BigQuery Schema service");
+        this.objectMapper = new ObjectMapper();
+        logger.info("BigQuery Schema service initialized successfully");
     }
 
     public String getSchemaContext() {
         if (cachedSchemaContext == null) {
+            logger.info("Building schema context: dataset={}, schema={}", datasetName, schemaName);
+            long startTime = System.currentTimeMillis();
             cachedSchemaContext = buildSchemaContext();
+            long buildTime = System.currentTimeMillis() - startTime;
+            logger.info("Schema context built: dataset={}, schema={}, contextLength={}, buildTimeMs={}", 
+                    datasetName, schemaName, cachedSchemaContext.length(), buildTime);
+        } else {
+            logger.debug("Returning cached schema context: contextLength={}", cachedSchemaContext.length());
         }
         return cachedSchemaContext;
     }
@@ -45,58 +52,86 @@ public class BigQuerySchemaService {
         schemaContext.append("Available Tables and Schemas:\n\n");
 
         try {
-            DatasetId datasetId = DatasetId.of(schemaName, datasetName);
-            Dataset dataset = bigQuery.getDataset(datasetId);
-            if (dataset == null) {
-                return "Dataset not found: " + datasetName + "." + schemaName;
-            }
-
-            List<String> tableNames = new ArrayList<>();
-            for (Table table : dataset.list().iterateAll()) {
-                tableNames.add(table.getTableId().getTable());
-            }
-
-            // Focus on key NCAA basketball tables
-            String[] keyTables = {"mbb_games", "mbb_teams", "mbb_players_games_sr", "mbb_historical_teams_games", 
-                                  "mbb_historical_tournament_games", "mbb_historical_team_seasons"};
+            logger.debug("Loading schema from table-schema.json");
+            ClassPathResource resource = new ClassPathResource("table-schema.json");
             
-            for (String tableName : keyTables) {
-                if (tableNames.contains(tableName)) {
-                    TableId tableId = TableId.of(schemaName, datasetName, tableName);
-                    Table table = bigQuery.getTable(tableId);
-                    if (table != null) {
-                        schemaContext.append(formatTableSchema(table));
+            try (InputStream inputStream = resource.getInputStream()) {
+                JsonNode schemaArray = objectMapper.readTree(inputStream);
+                logger.debug("Loaded {} column definitions from schema file", schemaArray.size());
+                
+                // Group columns by table name
+                Map<String, List<JsonNode>> tableColumns = new LinkedHashMap<>();
+                for (JsonNode column : schemaArray) {
+                    String tableName = column.get("table_name").asText();
+                    tableColumns.computeIfAbsent(tableName, k -> new ArrayList<>()).add(column);
+                }
+                
+                logger.info("Found {} tables in schema file", tableColumns.size());
+                
+                // Focus on key NCAA basketball tables (in order of importance)
+                String[] keyTables = {
+                    "mbb_teams",
+                    "mbb_players_games_sr",
+                    "mbb_games_sr",
+                    "mbb_teams_games_sr",
+                    "mbb_historical_teams_games",
+                    "mbb_historical_tournament_games",
+                    "mbb_historical_teams_seasons",
+                    "mbb_pbp_sr",
+                    "team_colors",
+                    "mascots"
+                };
+                
+                int tablesProcessed = 0;
+                for (String tableName : keyTables) {
+                    if (tableColumns.containsKey(tableName)) {
+                        List<JsonNode> columns = tableColumns.get(tableName);
+                        // Sort by ordinal position
+                        columns.sort(Comparator.comparingInt(c -> c.get("ordinal_position").asInt()));
+                        schemaContext.append(formatTableSchema(tableName, columns));
+                        tablesProcessed++;
+                        logger.debug("Processed table schema: tableName={}, columnCount={}", 
+                                tableName, columns.size());
+                    } else {
+                        logger.debug("Table not in schema file: tableName={}", tableName);
                     }
                 }
+                
+                logger.info("Processed {} key tables for schema context", tablesProcessed);
             }
+        } catch (IOException e) {
+            logger.error("Error loading schema from file: error={}", e.getMessage(), e);
+            schemaContext.append("Error loading schemas: ").append(e.getMessage());
         } catch (Exception e) {
-            schemaContext.append("Error retrieving schemas: ").append(e.getMessage());
+            logger.error("Error processing schema: error={}", e.getMessage(), e);
+            schemaContext.append("Error processing schemas: ").append(e.getMessage());
         }
 
         return schemaContext.toString();
     }
 
-    private String formatTableSchema(Table table) {
+    private String formatTableSchema(String tableName, List<JsonNode> columns) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Table: ").append(table.getTableId().getTable()).append("\n");
+        sb.append("Table: ").append(tableName).append("\n");
+        sb.append("Full Reference: `").append(datasetName).append(".").append(schemaName)
+          .append(".").append(tableName).append("`\n");
+        sb.append("Columns:\n");
         
-        TableDefinition definition = table.getDefinition();
-        if (definition instanceof StandardTableDefinition) {
-            StandardTableDefinition stdDef = (StandardTableDefinition) definition;
-            Schema schema = stdDef.getSchema();
+        for (JsonNode column : columns) {
+            String columnName = column.get("column_name").asText();
+            String dataType = column.get("data_type").asText();
+            String isNullable = column.get("is_nullable").asText();
             
-            if (schema != null && schema.getFields() != null) {
-                sb.append("Columns:\n");
-                for (Field field : schema.getFields()) {
-                    sb.append("  - ").append(field.getName())
-                      .append(" (").append(field.getType().toString()).append(")");
-                    if (field.getDescription() != null && !field.getDescription().isEmpty()) {
-                        sb.append(": ").append(field.getDescription());
-                    }
-                    sb.append("\n");
-                }
+            sb.append("  - ").append(columnName)
+              .append(" (").append(dataType);
+            
+            if ("NO".equals(isNullable)) {
+                sb.append(", NOT NULL");
             }
+            
+            sb.append(")\n");
         }
+        
         sb.append("\n");
         return sb.toString();
     }
