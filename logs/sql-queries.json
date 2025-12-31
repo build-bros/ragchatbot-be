@@ -1462,4 +1462,1401 @@
   "sql" : "WITH\n  PlayerSeasonal3P AS (\n    SELECT\n      season,\n      full_name,\n      SUM(three_points_made) AS seasonal_3pm\n    FROM\n      `bigquery-public-data.ncaa_basketball.mbb_players_games_sr`\n    WHERE\n      season BETWEEN 2013 AND 2017\n      AND full_name IS NOT NULL\n    GROUP BY\n      season,\n      full_name\n  ),\n  TopPlayers AS (\n    SELECT\n      full_name\n    FROM\n      PlayerSeasonal3P\n    GROUP BY\n      full_name\n    ORDER BY\n      SUM(seasonal_3pm) DESC\n    LIMIT\n      4\n  )\nSELECT\n  t1.season,\n  t1.full_name AS player_name,\n  t1.seasonal_3pm AS three_pointers_made\nFROM\n  PlayerSeasonal3P AS t1\n  INNER JOIN TopPlayers AS t2 ON t1.full_name = t2.full_name\nORDER BY\n  t1.season,\n  player_name",
   "timestamp" : "2025-11-16T21:52:26.881172",
   "normalizedSql" : "WITH PLAYERSEASONAL3P AS ( SELECT SEASON, FULL_NAME, SUM(THREE_POINTS_MADE) AS SEASONAL_3PM FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` WHERE SEASON BETWEEN # AND # AND FULL_NAME IS NOT NULL GROUP BY SEASON, FULL_NAME ), TOPPLAYERS AS ( SELECT FULL_NAME FROM PLAYERSEASONAL3P GROUP BY FULL_NAME ORDER BY SUM(SEASONAL_3PM) DESC LIMIT # ) SELECT T1.SEASON, T1.FULL_NAME AS PLAYER_NAME, T1.SEASONAL_3PM AS THREE_POINTERS_MADE FROM PLAYERSEASONAL3P AS T1 INNER JOIN TOPPLAYERS AS T2 ON T1.FULL_NAME = T2.FULL_NAME ORDER BY T1.SEASON, PLAYER_NAME"
+}, {
+  "query" : "Show a line chart comparing average points per game over seasons 2010 to 2017 for four conferences as if they were different exchanges.",
+  "analysis" : {
+    "resultStats" : {
+      "primaryMetricMin" : 69.02670623145403,
+      "primaryMetricAvg" : 73.37922195784395,
+      "primaryMetric" : "average_points_per_game",
+      "primaryDimensionCardinality" : 2,
+      "primaryMetricNonNegative" : true,
+      "numericColumns" : [ "season", "average_points_per_game" ],
+      "columnCount" : 3,
+      "rowCountBucket" : "small",
+      "categoricalColumns" : [ "conf_name" ],
+      "primaryMetricMax" : 77.11142857142856,
+      "topDimensionValues" : [ "Big 12", "Big Ten" ],
+      "primaryDimension" : "conf_name",
+      "rowCount" : 10,
+      "hasTemporalDimension" : true,
+      "topMetricRows" : [ {
+        "category" : "Big 12",
+        "value" : 77.11142857142856
+      }, {
+        "category" : "Big 12",
+        "value" : 76.52023121387288
+      }, {
+        "category" : "Big 12",
+        "value" : 75.33823529411765
+      }, {
+        "category" : "Big 12",
+        "value" : 74.85380116959067
+      }, {
+        "category" : "Big Ten",
+        "value" : 73.94351464435138
+      } ],
+      "bottomMetricRows" : [ {
+        "category" : "Big 12",
+        "value" : 69.02670623145403
+      }, {
+        "category" : "Big Ten",
+        "value" : 69.06485355648543
+      }, {
+        "category" : "Big Ten",
+        "value" : 71.02489626556017
+      }, {
+        "category" : "Big Ten",
+        "value" : 73.22105263157901
+      }, {
+        "category" : "Big Ten",
+        "value" : 73.6874999999999
+      } ]
+    },
+    "responseTemplate" : {
+      "insights" : [ "Big 12 leads with 77.11", "Big 12 leads with 76.52", "Big 12 leads with 75.34" ],
+      "chartType" : "line",
+      "intentLabel" : "trend",
+      "templateId" : "trend_line",
+      "explanation" : "This line chart highlights how Average Points Per Game changes across Conf Name (min 69.03, max 77.11).",
+      "headline" : "Trend of Average Points Per Game across Conf Name"
+    },
+    "selectedChartType" : "multi_line",
+    "intent" : {
+      "primaryIntent" : "trend",
+      "chartTypeScores" : {
+        "bar" : 130.0,
+        "bubble" : 5.0,
+        "pie" : 115.0,
+        "line" : 230.0,
+        "table" : 0.1
+      },
+      "preferredChartType" : "line",
+      "confidence" : 1.0,
+      "explicitChartType" : "line",
+      "explicitRequest" : true,
+      "sqlAnalysis" : {
+        "groupByColumnCount" : 1,
+        "hasLimit" : false,
+        "hasAggregation" : true,
+        "hasTemporalGrouping" : true,
+        "groupByColumns" : [ "season" ]
+      }
+    },
+    "normalizedSql" : "SELECT T.SEASON, T.CONF_NAME, AVG(T.POINTS_GAME) AS AVERAGE_POINTS_PER_GAME FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_TEAMS_GAMES_SR` AS T WHERE T.SEASON BETWEEN # AND # AND T.CONF_NAME IN ('', '', '', '') GROUP BY T.SEASON, T.CONF_NAME ORDER BY T.SEASON, T.CONF_NAME"
+  },
+  "results" : {
+    "columnTypes" : [ "INT64", "STRING", "FLOAT64" ],
+    "columns" : [ "season", "conf_name", "average_points_per_game" ],
+    "truncated" : false,
+    "rowCount" : 10,
+    "columnCount" : 3,
+    "rows" : [ [ "2013", "Big 12", "75.338235294117652" ], [ "2013", "Big Ten", "71.024896265560173" ], [ "2014", "Big 12", "69.026706231454028" ], [ "2014", "Big Ten", "69.064853556485431" ], [ "2015", "Big 12", "74.853801169590668" ], [ "2015", "Big Ten", "73.221052631579013" ], [ "2016", "Big 12", "76.520231213872876" ], [ "2016", "Big Ten", "73.6874999999999" ], [ "2017", "Big 12", "77.111428571428561" ], [ "2017", "Big Ten", "73.943514644351382" ] ]
+  },
+  "sql" : "SELECT\n  t.season,\n  t.conf_name,\n  AVG(t.points_game) AS average_points_per_game\nFROM\n  `bigquery-public-data.ncaa_basketball.mbb_teams_games_sr` AS t\nWHERE\n  t.season BETWEEN 2010 AND 2017\n  AND t.conf_name IN ('Big Ten', 'Big 12', 'ACC', 'SEC')\nGROUP BY\n  t.season,\n  t.conf_name\nORDER BY\n  t.season,\n  t.conf_name",
+  "timestamp" : "2025-11-17T09:22:46.336956",
+  "normalizedSql" : "SELECT T.SEASON, T.CONF_NAME, AVG(T.POINTS_GAME) AS AVERAGE_POINTS_PER_GAME FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_TEAMS_GAMES_SR` AS T WHERE T.SEASON BETWEEN # AND # AND T.CONF_NAME IN ('', '', '', '') GROUP BY T.SEASON, T.CONF_NAME ORDER BY T.SEASON, T.CONF_NAME"
+}, {
+  "query" : "Show a bar chart comparing average points per game by season for the top 4 scoring teams in 2015 across seasons 2013 to 2017.",
+  "analysis" : {
+    "resultStats" : {
+      "primaryMetricMin" : 74.0,
+      "primaryMetricAvg" : 82.75719633307868,
+      "primaryMetric" : "average_points",
+      "primaryDimensionCardinality" : 4,
+      "primaryMetricNonNegative" : true,
+      "numericColumns" : [ "season", "average_points" ],
+      "columnCount" : 3,
+      "rowCountBucket" : "small",
+      "categoricalColumns" : [ "team_name" ],
+      "primaryMetricMax" : 95.0,
+      "topDimensionValues" : [ "Golden Grizzlies", "Maroons", "Falcons", "Panthers" ],
+      "primaryDimension" : "team_name",
+      "rowCount" : 10,
+      "hasTemporalDimension" : true,
+      "topMetricRows" : [ {
+        "category" : "Panthers",
+        "value" : 95.0
+      }, {
+        "category" : "Maroons",
+        "value" : 94.0
+      }, {
+        "category" : "Falcons",
+        "value" : 90.0
+      }, {
+        "category" : "Golden Grizzlies",
+        "value" : 86.37142857142858
+      }, {
+        "category" : "Falcons",
+        "value" : 82.0
+      } ],
+      "bottomMetricRows" : [ {
+        "category" : "Maroons",
+        "value" : 74.0
+      }, {
+        "category" : "Golden Grizzlies",
+        "value" : 74.24242424242424
+      }, {
+        "category" : "Golden Grizzlies",
+        "value" : 74.39393939393939
+      }, {
+        "category" : "Golden Grizzlies",
+        "value" : 78.18181818181816
+      }, {
+        "category" : "Golden Grizzlies",
+        "value" : 79.38235294117649
+      } ]
+    },
+    "responseTemplate" : {
+      "insights" : [ "Panthers leads with 95.00", "Maroons leads with 94.00", "Falcons leads with 90.00" ],
+      "chartType" : "bar",
+      "intentLabel" : "comparison",
+      "templateId" : "comparison_bar",
+      "explanation" : "Bars show how each Team Name ranks based on Average Points. 10 rows total.",
+      "headline" : "Comparing Average Points by Team Name"
+    },
+    "selectedChartType" : "bar",
+    "intent" : {
+      "primaryIntent" : "comparison",
+      "chartTypeScores" : {
+        "bar" : 330.0,
+        "bubble" : 5.0,
+        "pie" : 115.0,
+        "line" : 30.0,
+        "table" : 0.1
+      },
+      "preferredChartType" : "bar",
+      "confidence" : 1.0,
+      "explicitChartType" : "bar",
+      "explicitRequest" : true,
+      "sqlAnalysis" : {
+        "groupByColumnCount" : 1,
+        "hasLimit" : true,
+        "hasAggregation" : true,
+        "hasTemporalGrouping" : false,
+        "groupByColumns" : [ "team_id" ]
+      }
+    },
+    "normalizedSql" : "WITH TOP_2015_TEAMS AS ( SELECT TEAM_ID FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_TEAMS_GAMES_SR` WHERE SEASON = # GROUP BY TEAM_ID ORDER BY AVG(POINTS_GAME) DESC LIMIT # ) SELECT T.SEASON, T.NAME AS TEAM_NAME, AVG(T.POINTS_GAME) AS AVERAGE_POINTS FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_TEAMS_GAMES_SR` AS T WHERE T.SEASON BETWEEN # AND # AND T.TEAM_ID IN ( SELECT TEAM_ID FROM TOP_2015_TEAMS ) GROUP BY T.SEASON, TEAM_NAME ORDER BY T.SEASON, AVERAGE_POINTS DESC"
+  },
+  "results" : {
+    "columnTypes" : [ "INT64", "STRING", "FLOAT64" ],
+    "columns" : [ "season", "team_name", "average_points" ],
+    "truncated" : false,
+    "rowCount" : 10,
+    "columnCount" : 3,
+    "rows" : [ [ "2013", "Falcons", "82.0" ], [ "2013", "Golden Grizzlies", "74.393939393939391" ], [ "2013", "Maroons", "74.0" ], [ "2014", "Golden Grizzlies", "74.242424242424235" ], [ "2015", "Panthers", "95.0" ], [ "2015", "Maroons", "94.0" ], [ "2015", "Falcons", "90.0" ], [ "2015", "Golden Grizzlies", "86.371428571428581" ], [ "2016", "Golden Grizzlies", "79.382352941176492" ], [ "2017", "Golden Grizzlies", "78.181818181818159" ] ]
+  },
+  "sql" : "WITH\n  top_2015_teams AS (\n    SELECT\n      team_id\n    FROM\n      `bigquery-public-data.ncaa_basketball.mbb_teams_games_sr`\n    WHERE\n      season = 2015\n    GROUP BY\n      team_id\n    ORDER BY\n      AVG(points_game) DESC\n    LIMIT\n      4\n  )\nSELECT\n  t.season,\n  t.name AS team_name,\n  AVG(t.points_game) AS average_points\nFROM\n  `bigquery-public-data.ncaa_basketball.mbb_teams_games_sr` AS t\nWHERE\n  t.season BETWEEN 2013 AND 2017\n  AND t.team_id IN (\n    SELECT\n      team_id\n    FROM\n      top_2015_teams\n  )\nGROUP BY\n  t.season,\n  team_name\nORDER BY\n  t.season,\n  average_points DESC",
+  "timestamp" : "2025-11-17T10:19:47.444857",
+  "normalizedSql" : "WITH TOP_2015_TEAMS AS ( SELECT TEAM_ID FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_TEAMS_GAMES_SR` WHERE SEASON = # GROUP BY TEAM_ID ORDER BY AVG(POINTS_GAME) DESC LIMIT # ) SELECT T.SEASON, T.NAME AS TEAM_NAME, AVG(T.POINTS_GAME) AS AVERAGE_POINTS FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_TEAMS_GAMES_SR` AS T WHERE T.SEASON BETWEEN # AND # AND T.TEAM_ID IN ( SELECT TEAM_ID FROM TOP_2015_TEAMS ) GROUP BY T.SEASON, TEAM_NAME ORDER BY T.SEASON, AVERAGE_POINTS DESC"
+}, {
+  "query" : "Generate table for data comparing the average points per game for Jordan Howard and Trevon Bluiett from 2015 to 2017.",
+  "analysis" : {
+    "resultStats" : {
+      "primaryMetricMin" : 15.058823529411766,
+      "primaryMetricAvg" : 18.64384912748883,
+      "primaryMetric" : "average_points",
+      "primaryDimensionCardinality" : 2,
+      "primaryMetricNonNegative" : true,
+      "numericColumns" : [ "season", "average_points" ],
+      "columnCount" : 3,
+      "rowCountBucket" : "small",
+      "categoricalColumns" : [ "player_name" ],
+      "primaryMetricMax" : 25.142857142857146,
+      "topDimensionValues" : [ "Trevon Bluiett", "Jordan Howard" ],
+      "primaryDimension" : "player_name",
+      "rowCount" : 6,
+      "hasTemporalDimension" : true,
+      "topMetricRows" : [ {
+        "category" : "Jordan Howard",
+        "value" : 25.142857142857146
+      }, {
+        "category" : "Jordan Howard",
+        "value" : 19.468749999999996
+      }, {
+        "category" : "Trevon Bluiett",
+        "value" : 19.314285714285713
+      }, {
+        "category" : "Trevon Bluiett",
+        "value" : 17.500000000000004
+      }, {
+        "category" : "Jordan Howard",
+        "value" : 15.378378378378375
+      } ],
+      "bottomMetricRows" : [ {
+        "category" : "Trevon Bluiett",
+        "value" : 15.058823529411766
+      }, {
+        "category" : "Jordan Howard",
+        "value" : 15.378378378378375
+      }, {
+        "category" : "Trevon Bluiett",
+        "value" : 17.500000000000004
+      }, {
+        "category" : "Trevon Bluiett",
+        "value" : 19.314285714285713
+      }, {
+        "category" : "Jordan Howard",
+        "value" : 19.468749999999996
+      } ]
+    },
+    "responseTemplate" : {
+      "insights" : [ ],
+      "chartType" : "table",
+      "intentLabel" : "table",
+      "templateId" : "table_default",
+      "explanation" : "Showing 6 rows and 3 columns.",
+      "headline" : "Detailed table results"
+    },
+    "selectedChartType" : "table",
+    "intent" : {
+      "primaryIntent" : "comparison",
+      "chartTypeScores" : {
+        "bar" : 130.0,
+        "bubble" : 5.0,
+        "pie" : 115.0,
+        "line" : 130.0,
+        "table" : 100.0
+      },
+      "preferredChartType" : "bar",
+      "confidence" : 1.0,
+      "explicitChartType" : "table",
+      "explicitRequest" : true,
+      "sqlAnalysis" : {
+        "groupByColumnCount" : 1,
+        "hasLimit" : false,
+        "hasAggregation" : true,
+        "hasTemporalGrouping" : true,
+        "groupByColumns" : [ "season" ]
+      }
+    },
+    "normalizedSql" : "SELECT T.SEASON, T.FULL_NAME AS PLAYER_NAME, AVG(T.POINTS) AS AVERAGE_POINTS FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` AS T WHERE T.FULL_NAME IN ('', '') AND T.SEASON BETWEEN # AND # GROUP BY T.SEASON, T.FULL_NAME ORDER BY T.FULL_NAME, T.SEASON"
+  },
+  "results" : {
+    "columnTypes" : [ "INT64", "STRING", "FLOAT64" ],
+    "columns" : [ "season", "player_name", "average_points" ],
+    "truncated" : false,
+    "rowCount" : 6,
+    "columnCount" : 3,
+    "rows" : [ [ "2015", "Jordan Howard", "15.378378378378375" ], [ "2016", "Jordan Howard", "19.468749999999996" ], [ "2017", "Jordan Howard", "25.142857142857146" ], [ "2015", "Trevon Bluiett", "15.058823529411766" ], [ "2016", "Trevon Bluiett", "17.500000000000004" ], [ "2017", "Trevon Bluiett", "19.314285714285713" ] ]
+  },
+  "sql" : "SELECT\n  t.season,\n  t.full_name AS player_name,\n  AVG(t.points) AS average_points\nFROM\n  `bigquery-public-data.ncaa_basketball.mbb_players_games_sr` AS t\nWHERE\n  t.full_name IN ('Jordan Howard', 'Trevon Bluiett') AND t.season BETWEEN 2015 AND 2017\nGROUP BY\n  t.season,\n  t.full_name\nORDER BY\n  t.full_name,\n  t.season",
+  "timestamp" : "2025-11-17T10:21:00.826006",
+  "normalizedSql" : "SELECT T.SEASON, T.FULL_NAME AS PLAYER_NAME, AVG(T.POINTS) AS AVERAGE_POINTS FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` AS T WHERE T.FULL_NAME IN ('', '') AND T.SEASON BETWEEN # AND # GROUP BY T.SEASON, T.FULL_NAME ORDER BY T.FULL_NAME, T.SEASON"
+}, {
+  "query" : "Generate a line chart comparing the average points per game for Jordan Howard and Trevon Bluiett from 2015 to 2017.",
+  "analysis" : {
+    "resultStats" : {
+      "primaryMetricMin" : 15.058823529411766,
+      "primaryMetricAvg" : 18.643849127488835,
+      "primaryMetric" : "average_points_per_game",
+      "primaryDimensionCardinality" : 2,
+      "primaryMetricNonNegative" : true,
+      "numericColumns" : [ "season", "average_points_per_game" ],
+      "columnCount" : 3,
+      "rowCountBucket" : "small",
+      "categoricalColumns" : [ "player_name" ],
+      "primaryMetricMax" : 25.142857142857146,
+      "topDimensionValues" : [ "Trevon Bluiett", "Jordan Howard" ],
+      "primaryDimension" : "player_name",
+      "rowCount" : 6,
+      "hasTemporalDimension" : true,
+      "topMetricRows" : [ {
+        "category" : "Jordan Howard",
+        "value" : 25.142857142857146
+      }, {
+        "category" : "Jordan Howard",
+        "value" : 19.468749999999996
+      }, {
+        "category" : "Trevon Bluiett",
+        "value" : 19.314285714285713
+      }, {
+        "category" : "Trevon Bluiett",
+        "value" : 17.500000000000004
+      }, {
+        "category" : "Jordan Howard",
+        "value" : 15.378378378378375
+      } ],
+      "bottomMetricRows" : [ {
+        "category" : "Trevon Bluiett",
+        "value" : 15.058823529411766
+      }, {
+        "category" : "Jordan Howard",
+        "value" : 15.378378378378375
+      }, {
+        "category" : "Trevon Bluiett",
+        "value" : 17.500000000000004
+      }, {
+        "category" : "Trevon Bluiett",
+        "value" : 19.314285714285713
+      }, {
+        "category" : "Jordan Howard",
+        "value" : 19.468749999999996
+      } ]
+    },
+    "responseTemplate" : {
+      "insights" : [ "Jordan Howard leads with 25.14", "Jordan Howard leads with 19.47", "Trevon Bluiett leads with 19.31" ],
+      "chartType" : "line",
+      "intentLabel" : "trend",
+      "templateId" : "trend_line",
+      "explanation" : "This line chart highlights how Average Points Per Game changes across Player Name (min 15.06, max 25.14).",
+      "headline" : "Trend of Average Points Per Game across Player Name"
+    },
+    "selectedChartType" : "multi_line",
+    "intent" : {
+      "primaryIntent" : "trend",
+      "chartTypeScores" : {
+        "bar" : 130.0,
+        "bubble" : 5.0,
+        "pie" : 115.0,
+        "line" : 230.0,
+        "table" : 0.1
+      },
+      "preferredChartType" : "line",
+      "confidence" : 1.0,
+      "explicitChartType" : "line",
+      "explicitRequest" : true,
+      "sqlAnalysis" : {
+        "groupByColumnCount" : 1,
+        "hasLimit" : false,
+        "hasAggregation" : true,
+        "hasTemporalGrouping" : true,
+        "groupByColumns" : [ "season" ]
+      }
+    },
+    "normalizedSql" : "SELECT T.SEASON, T.FULL_NAME AS PLAYER_NAME, AVG(T.POINTS) AS AVERAGE_POINTS_PER_GAME FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` AS T WHERE T.SEASON BETWEEN # AND # AND T.FULL_NAME IN ('', '') GROUP BY T.SEASON, PLAYER_NAME ORDER BY T.SEASON, PLAYER_NAME"
+  },
+  "results" : {
+    "columnTypes" : [ "INT64", "STRING", "FLOAT64" ],
+    "columns" : [ "season", "player_name", "average_points_per_game" ],
+    "truncated" : false,
+    "rowCount" : 6,
+    "columnCount" : 3,
+    "rows" : [ [ "2015", "Jordan Howard", "15.378378378378375" ], [ "2015", "Trevon Bluiett", "15.058823529411766" ], [ "2016", "Jordan Howard", "19.468749999999996" ], [ "2016", "Trevon Bluiett", "17.500000000000004" ], [ "2017", "Jordan Howard", "25.142857142857146" ], [ "2017", "Trevon Bluiett", "19.314285714285713" ] ]
+  },
+  "sql" : "SELECT\n  t.season,\n  t.full_name AS player_name,\n  AVG(t.points) AS average_points_per_game\nFROM\n  `bigquery-public-data.ncaa_basketball.mbb_players_games_sr` AS t\nWHERE\n  t.season BETWEEN 2015 AND 2017\n  AND t.full_name IN ('Jordan Howard', 'Trevon Bluiett')\nGROUP BY\n  t.season,\n  player_name\nORDER BY\n  t.season,\n  player_name",
+  "timestamp" : "2025-11-17T10:21:30.503873",
+  "normalizedSql" : "SELECT T.SEASON, T.FULL_NAME AS PLAYER_NAME, AVG(T.POINTS) AS AVERAGE_POINTS_PER_GAME FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` AS T WHERE T.SEASON BETWEEN # AND # AND T.FULL_NAME IN ('', '') GROUP BY T.SEASON, PLAYER_NAME ORDER BY T.SEASON, PLAYER_NAME"
+}, {
+  "query" : "GIve me a line chart comparison between top 4 players based on 3 pointers scored per season across season 2003 to 2004.",
+  "analysis" : {
+    "resultStats" : {
+      "primaryMetricMin" : null,
+      "primaryMetricAvg" : null,
+      "primaryMetric" : null,
+      "primaryDimensionCardinality" : 0,
+      "primaryMetricNonNegative" : true,
+      "numericColumns" : [ ],
+      "columnCount" : 0,
+      "rowCountBucket" : "empty",
+      "categoricalColumns" : [ ],
+      "primaryMetricMax" : null,
+      "topDimensionValues" : [ ],
+      "primaryDimension" : null,
+      "rowCount" : 0,
+      "hasTemporalDimension" : false,
+      "topMetricRows" : [ ],
+      "bottomMetricRows" : [ ]
+    },
+    "responseTemplate" : {
+      "insights" : [ ],
+      "chartType" : "table",
+      "intentLabel" : "table",
+      "templateId" : "table_default",
+      "explanation" : "Showing 0 rows and 0 columns.",
+      "headline" : "Detailed table results"
+    },
+    "selectedChartType" : "table",
+    "intent" : {
+      "primaryIntent" : "comparison",
+      "chartTypeScores" : {
+        "bar" : 200.0,
+        "bubble" : 5.0,
+        "pie" : 80.0,
+        "line" : 100.0,
+        "table" : 0.1
+      },
+      "preferredChartType" : "bar",
+      "confidence" : 1.0,
+      "explicitChartType" : "line",
+      "explicitRequest" : true,
+      "sqlAnalysis" : {
+        "groupByColumnCount" : 1,
+        "hasLimit" : true,
+        "hasAggregation" : true,
+        "hasTemporalGrouping" : false,
+        "groupByColumns" : [ "full_name" ]
+      }
+    },
+    "normalizedSql" : "WITH TOPPLAYERS AS ( SELECT FULL_NAME FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` WHERE SEASON BETWEEN # AND # GROUP BY FULL_NAME ORDER BY SUM(THREE_POINTS_MADE) DESC LIMIT # ) SELECT P.SEASON, P.FULL_NAME, SUM(P.THREE_POINTS_MADE) AS TOTAL_THREE_POINTERS FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` AS P JOIN TOPPLAYERS AS TP ON P.FULL_NAME = TP.FULL_NAME WHERE P.SEASON BETWEEN # AND # GROUP BY P.SEASON, P.FULL_NAME ORDER BY P.SEASON, TOTAL_THREE_POINTERS DESC"
+  },
+  "results" : {
+    "columnTypes" : [ "INT64", "STRING", "INT64" ],
+    "columns" : [ "season", "full_name", "total_three_pointers" ],
+    "truncated" : false,
+    "rowCount" : 0,
+    "columnCount" : 3,
+    "rows" : [ ]
+  },
+  "sql" : "WITH\n  TopPlayers AS (\n    SELECT\n      full_name\n    FROM\n      `bigquery-public-data.ncaa_basketball.mbb_players_games_sr`\n    WHERE\n      season BETWEEN 2003 AND 2004\n    GROUP BY\n      full_name\n    ORDER BY\n      SUM(three_points_made) DESC\n    LIMIT 4\n  )\nSELECT\n  p.season,\n  p.full_name,\n  SUM(p.three_points_made) AS total_three_pointers\nFROM\n  `bigquery-public-data.ncaa_basketball.mbb_players_games_sr` AS p\n  JOIN TopPlayers AS tp ON p.full_name = tp.full_name\nWHERE\n  p.season BETWEEN 2003 AND 2004\nGROUP BY\n  p.season,\n  p.full_name\nORDER BY\n  p.season,\n  total_three_pointers DESC",
+  "timestamp" : "2025-11-17T10:32:27.809296",
+  "normalizedSql" : "WITH TOPPLAYERS AS ( SELECT FULL_NAME FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` WHERE SEASON BETWEEN # AND # GROUP BY FULL_NAME ORDER BY SUM(THREE_POINTS_MADE) DESC LIMIT # ) SELECT P.SEASON, P.FULL_NAME, SUM(P.THREE_POINTS_MADE) AS TOTAL_THREE_POINTERS FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` AS P JOIN TOPPLAYERS AS TP ON P.FULL_NAME = TP.FULL_NAME WHERE P.SEASON BETWEEN # AND # GROUP BY P.SEASON, P.FULL_NAME ORDER BY P.SEASON, TOTAL_THREE_POINTERS DESC"
+}, {
+  "query" : "Show a table of players with their total points, total rebounds, total assists, and field goal percentage for the 2017 season",
+  "analysis" : {
+    "resultStats" : {
+      "primaryMetricMin" : 597.0,
+      "primaryMetricAvg" : 676.12,
+      "primaryMetric" : "total_points",
+      "primaryDimensionCardinality" : 100,
+      "primaryMetricNonNegative" : true,
+      "numericColumns" : [ "total_points", "total_rebounds", "total_assists", "field_goal_percentage" ],
+      "columnCount" : 5,
+      "rowCountBucket" : "large",
+      "categoricalColumns" : [ "full_name" ],
+      "primaryMetricMax" : 880.0,
+      "topDimensionValues" : [ "RJ Cole", "Tyler Nelson", "Jermaine Marrow", "Kendrick Nunn", "Paul Miller" ],
+      "primaryDimension" : "full_name",
+      "rowCount" : 100,
+      "hasTemporalDimension" : false,
+      "topMetricRows" : [ {
+        "category" : "Jordan Howard",
+        "value" : 880.0
+      }, {
+        "category" : "Trae Young",
+        "value" : 876.0
+      }, {
+        "category" : "Jordan Davis",
+        "value" : 869.0
+      }, {
+        "category" : "Andre Spight",
+        "value" : 855.0
+      }, {
+        "category" : "Mike Daum",
+        "value" : 836.0
+      } ],
+      "bottomMetricRows" : [ {
+        "category" : "Rodrick Sikes",
+        "value" : 597.0
+      }, {
+        "category" : "Allonzo Trier",
+        "value" : 598.0
+      }, {
+        "category" : "Denzel Mahoney",
+        "value" : 598.0
+      }, {
+        "category" : "Tre'Shaun Fletcher",
+        "value" : 598.0
+      }, {
+        "category" : "Justin Johnson",
+        "value" : 599.0
+      } ]
+    },
+    "responseTemplate" : {
+      "insights" : [ ],
+      "chartType" : "table",
+      "intentLabel" : "table",
+      "templateId" : "table_default",
+      "explanation" : "Showing 100 rows and 5 columns.",
+      "headline" : "Detailed table results"
+    },
+    "selectedChartType" : "table",
+    "intent" : {
+      "primaryIntent" : "comparison",
+      "chartTypeScores" : {
+        "bar" : 200.0,
+        "bubble" : 15.0,
+        "pie" : 80.0,
+        "line" : 0.0,
+        "table" : 125.0
+      },
+      "preferredChartType" : "bar",
+      "confidence" : 1.0,
+      "explicitChartType" : "table",
+      "explicitRequest" : true,
+      "sqlAnalysis" : {
+        "groupByColumnCount" : 1,
+        "hasLimit" : true,
+        "hasAggregation" : true,
+        "hasTemporalGrouping" : false,
+        "groupByColumns" : [ "full_name" ]
+      }
+    },
+    "normalizedSql" : "SELECT FULL_NAME, SUM(POINTS) AS TOTAL_POINTS, SUM(REBOUNDS) AS TOTAL_REBOUNDS, SUM(ASSISTS) AS TOTAL_ASSISTS, SAFE_DIVIDE(SUM(FIELD_GOALS_MADE), SUM(FIELD_GOALS_ATT)) AS FIELD_GOAL_PERCENTAGE FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` WHERE SEASON = # AND PLAYED = TRUE GROUP BY FULL_NAME HAVING SUM(FIELD_GOALS_ATT) > # ORDER BY TOTAL_POINTS DESC LIMIT #"
+  },
+  "results" : {
+    "columnTypes" : [ "STRING", "INT64", "INT64", "INT64", "FLOAT64" ],
+    "columns" : [ "full_name", "total_points", "total_rebounds", "total_assists", "field_goal_percentage" ],
+    "truncated" : false,
+    "rowCount" : 100,
+    "columnCount" : 5,
+    "rows" : [ [ "Jordan Howard", "880", "125", "93", "0.45676998368678629" ], [ "Trae Young", "876", "125", "278", "0.42233009708737862" ], [ "Jordan Davis", "869", "239", "178", "0.48648648648648651" ], [ "Andre Spight", "855", "146", "139", "0.443267776096823" ], [ "Mike Daum", "836", "359", "45", "0.46192893401015228" ], [ "Jon Elmore", "816", "209", "242", "0.43862815884476536" ], [ "RJ Cole", "782", "130", "198", "0.3937908496732026" ], [ "Kendrick Nunn", "777", "142", "113", "0.43521594684385384" ], [ "Chris Clemons", "772", "142", "95", "0.45242718446601943" ], [ "Jock Landale", "761", "366", "72", "0.6404255319148936" ], [ "Jalen Brunson", "756", "122", "184", "0.52123552123552119" ], [ "Justin Wright-Foreman", "755", "103", "100", "0.44897959183673469" ], [ "Fletcher Magee", "751", "100", "58", "0.4837476099426386" ], [ "Bryson Scott", "746", "148", "87", "0.45656192236598891" ], [ "Kelan Martin", "743", "219", "70", "0.44655172413793104" ], [ "D'Marcus Simonds", "742", "201", "153", "0.46089850249584025" ], [ "Bogdan Bliznyuk", "741", "238", "137", "0.52788844621513942" ], [ "Roosevelt Smart", "734", "160", "34", "0.397459165154265" ], [ "Tyler Nelson", "732", "138", "110", "0.42047531992687387" ], [ "Jerome Robinson", "727", "125", "116", "0.4854368932038835" ], [ "Tony Carr", "725", "183", "186", "0.40833333333333333" ], [ "Darius Thompson", "723", "223", "226", "0.43897996357012753" ], [ "Joel Hernandez", "718", "203", "90", "0.46126126126126127" ], [ "Zach Thomas", "716", "317", "74", "0.46188340807174888" ], [ "Andrew Rowsey", "716", "105", "169", "0.42020202020202019" ], [ "Garrison Mathews", "715", "180", "58", "0.46506550218340609" ], [ "Tyus Battle", "712", "108", "76", "0.39931740614334471" ], [ "Mikal Bridges", "706", "212", "77", "0.51368421052631574" ], [ "Junior Robinson", "703", "92", "154", "0.44618395303326808" ], [ "C.J. Burks", "702", "144", "107", "0.47186932849364793" ], [ "Peyton Aldridge", "701", "251", "82", "0.47908745247148288" ], [ "Markus Howard", "694", "108", "94", "0.4640776699029126" ], [ "Marvin Bagley III", "694", "366", "50", "0.61363636363636365" ], [ "Nick King", "694", "278", "65", "0.49521988527724664" ], [ "Kahlil Dukes", "692", "72", "108", "0.46473029045643155" ], [ "Carsen Edwards", "686", "142", "104", "0.458" ], [ "Jonathan Stark", "685", "85", "126", "0.45102040816326533" ], [ "Jerrick Harding", "682", "106", "53", "0.52978723404255323" ], [ "Reid Travis", "682", "306", "47", "0.52742616033755274" ], [ "Luwane Pipkins", "678", "114", "128", "0.43018867924528303" ], [ "Caleb Martin", "678", "194", "92", "0.45213849287169044" ], [ "Trevon Bluiett", "676", "193", "87", "0.43722943722943725" ], [ "Kevin Hervey", "676", "282", "73", "0.44587155963302755" ], [ "Devonte' Graham", "675", "157", "282", "0.39959839357429716" ], [ "Charles Williams", "673", "112", "20", "0.44620811287477952" ], [ "Keita Bates-Diop", "672", "296", "56", "0.47961165048543691" ], [ "Aaron Holiday", "671", "121", "192", "0.46086956521739131" ], [ "Nick Dixon", "670", "146", "78", "0.44772727272727275" ], [ "Jairus Lyles", "665", "183", "117", "0.439453125" ], [ "Donte Clark", "664", "187", "93", "0.40118577075098816" ], [ "Zach Lofton", "660", "167", "56", "0.45473684210526316" ], [ "Eugene German", "659", "123", "54", "0.47093023255813954" ], [ "Jermaine Marrow", "658", "176", "189", "0.3951890034364261" ], [ "Jordan Caroline", "656", "319", "82", "0.47424892703862659" ], [ "Rob Gray Jr. ", "655", "125", "148", "0.44672131147540983" ], [ "Marcus Foster", "654", "129", "89", "0.48330058939096265" ], [ "Reed Timmer", "650", "121", "79", "0.44418052256532065" ], [ "Martaveous McKnight", "650", "158", "124", "0.45208333333333334" ], [ "Shamorie Ponds", "647", "151", "142", "0.41977611940298509" ], [ "Jevon Carter", "640", "172", "246", "0.42239685658153242" ], [ "Matt Mooney", "637", "138", "105", "0.44509803921568625" ], [ "Elijah Bryant", "636", "222", "81", "0.49388753056234719" ], [ "Yante Maten", "636", "283", "51", "0.4641255605381166" ], [ "Zane Martin", "635", "113", "85", "0.45841784989858014" ], [ "Gary Blackston", "634", "176", "116", "0.43927125506072873" ], [ "Keenan Evans", "633", "107", "112", "0.47201946472019463" ], [ "Brandon Goodwin", "632", "188", "162", "0.47046413502109707" ], [ "Collin Sexton", "632", "124", "119", "0.44748858447488582" ], [ "Matt Morgan", "630", "129", "90", "0.491566265060241" ], [ "Roddy Peters", "629", "188", "135", "0.51460674157303365" ], [ "Demontrae Jefferson", "629", "84", "123", "0.41987829614604461" ], [ "Jaylen Barford", "628", "137", "89", "0.469601677148847" ], [ "Luke Maye", "625", "373", "88", "0.48643410852713176" ], [ "Justin Tillman", "625", "327", "15", "0.55730337078651682" ], [ "Yoeli Childs", "624", "301", "77", "0.54065934065934063" ], [ "Kyle Allman Jr.", "623", "111", "75", "0.48888888888888887" ], [ "Cameron Young", "622", "226", "91", "0.42307692307692307" ], [ "Chandler Hutchison", "619", "238", "107", "0.47453703703703703" ], [ "Cameron Johnson", "619", "237", "120", "0.44176706827309237" ], [ "Joel Berry II", "617", "127", "116", "0.3961904761904762" ], [ "Desmond Williams", "617", "208", "64", "0.43849206349206349" ], [ "Matt Mobley", "616", "169", "83", "0.41834451901565994" ], [ "Ky Bowman", "614", "239", "165", "0.42359767891682787" ], [ "Grant Riller", "613", "91", "67", "0.54502369668246442" ], [ "Max Heidegger", "612", "79", "79", "0.43237250554323725" ], [ "Joe Chealey", "611", "158", "122", "0.39302325581395348" ], [ "CJ Massinburg", "611", "264", "87", "0.46778042959427207" ], [ "Ronshad Shabazz", "609", "83", "99", "0.4" ], [ "Justin James", "606", "191", "98", "0.47191011235955055" ], [ "Tookie Brown", "606", "130", "137", "0.5337078651685393" ], [ "Paul Miller", "605", "180", "105", "0.4511930585683297" ], [ "Raiquan Clark", "604", "245", "53", "0.55645161290322576" ], [ "Lamar Stevens", "604", "232", "74", "0.46478873239436619" ], [ "Thomas Wilder", "603", "141", "138", "0.43115124153498874" ], [ "Khalil Small", "602", "222", "110", "0.44273127753303965" ], [ "Justin Johnson", "599", "361", "48", "0.51605995717344755" ], [ "Allonzo Trier", "598", "100", "107", "0.49864498644986449" ], [ "Denzel Mahoney", "598", "158", "39", "0.4631578947368421" ], [ "Tre'Shaun Fletcher", "598", "264", "142", "0.46275395033860045" ], [ "Rodrick Sikes", "597", "99", "27", "0.42280285035629456" ] ]
+  },
+  "sql" : "SELECT\n  full_name,\n  SUM(points) AS total_points,\n  SUM(rebounds) AS total_rebounds,\n  SUM(assists) AS total_assists,\n  SAFE_DIVIDE(SUM(field_goals_made), SUM(field_goals_att)) AS field_goal_percentage\nFROM\n  `bigquery-public-data.ncaa_basketball.mbb_players_games_sr`\nWHERE\n  season = 2017 AND played = TRUE\nGROUP BY\n  full_name\nHAVING\n  SUM(field_goals_att) > 50\nORDER BY\n  total_points DESC\nLIMIT 100",
+  "timestamp" : "2025-11-26T13:10:48.744636",
+  "normalizedSql" : "SELECT FULL_NAME, SUM(POINTS) AS TOTAL_POINTS, SUM(REBOUNDS) AS TOTAL_REBOUNDS, SUM(ASSISTS) AS TOTAL_ASSISTS, SAFE_DIVIDE(SUM(FIELD_GOALS_MADE), SUM(FIELD_GOALS_ATT)) AS FIELD_GOAL_PERCENTAGE FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` WHERE SEASON = # AND PLAYED = TRUE GROUP BY FULL_NAME HAVING SUM(FIELD_GOALS_ATT) > # ORDER BY TOTAL_POINTS DESC LIMIT #"
+}, {
+  "query" : "Show a bubble chart comparing teams’ average points, rebounds, and assists per game in the 2016 season (top 5teams)",
+  "analysis" : {
+    "resultStats" : {
+      "primaryMetricMin" : 85.62857142857143,
+      "primaryMetricAvg" : 87.47609307359308,
+      "primaryMetric" : "avg_points",
+      "primaryDimensionCardinality" : 5,
+      "primaryMetricNonNegative" : true,
+      "numericColumns" : [ "avg_points", "avg_rebounds", "avg_assists" ],
+      "columnCount" : 4,
+      "rowCountBucket" : "tiny",
+      "categoricalColumns" : [ "team_name" ],
+      "primaryMetricMax" : 89.0,
+      "topDimensionValues" : [ "Suns", "Chippewas", "Scarlet Hawks", "Thundering Herd", "Mastodons" ],
+      "primaryDimension" : "team_name",
+      "rowCount" : 5,
+      "hasTemporalDimension" : false,
+      "topMetricRows" : [ {
+        "category" : "Scarlet Hawks",
+        "value" : 89.0
+      }, {
+        "category" : "Chippewas",
+        "value" : 88.3125
+      }, {
+        "category" : "Suns",
+        "value" : 87.5
+      }, {
+        "category" : "Mastodons",
+        "value" : 86.93939393939394
+      }, {
+        "category" : "Thundering Herd",
+        "value" : 85.62857142857143
+      } ],
+      "bottomMetricRows" : [ {
+        "category" : "Thundering Herd",
+        "value" : 85.62857142857143
+      }, {
+        "category" : "Mastodons",
+        "value" : 86.93939393939394
+      }, {
+        "category" : "Suns",
+        "value" : 87.5
+      }, {
+        "category" : "Chippewas",
+        "value" : 88.3125
+      }, {
+        "category" : "Scarlet Hawks",
+        "value" : 89.0
+      } ]
+    },
+    "responseTemplate" : {
+      "insights" : [ "Scarlet Hawks leads with 89.00", "Chippewas leads with 88.31", "Suns leads with 87.50" ],
+      "chartType" : "bubble",
+      "intentLabel" : "comparison",
+      "templateId" : "correlation_bubble",
+      "explanation" : "Bubble size and position represent multiple metrics simultaneously.",
+      "headline" : "Multi-metric comparison"
+    },
+    "retrieval" : {
+      "chartType" : "bar",
+      "templateId" : "comparison_bar",
+      "support" : 0.02127659574468085
+    },
+    "selectedChartType" : "bubble",
+    "intent" : {
+      "primaryIntent" : "comparison",
+      "chartTypeScores" : {
+        "bar" : 230.0,
+        "bubble" : 115.0,
+        "pie" : 115.0,
+        "line" : 0.0,
+        "table" : 0.1
+      },
+      "preferredChartType" : "bar",
+      "confidence" : 1.0,
+      "explicitChartType" : "bubble",
+      "explicitRequest" : true,
+      "sqlAnalysis" : {
+        "groupByColumnCount" : 1,
+        "hasLimit" : true,
+        "hasAggregation" : true,
+        "hasTemporalGrouping" : false,
+        "groupByColumns" : [ "team_name" ]
+      }
+    },
+    "normalizedSql" : "SELECT NAME AS TEAM_NAME, AVG(POINTS) AS AVG_POINTS, AVG(REBOUNDS) AS AVG_REBOUNDS, AVG(ASSISTS) AS AVG_ASSISTS FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_TEAMS_GAMES_SR` WHERE SEASON = # GROUP BY TEAM_NAME ORDER BY AVG_POINTS DESC LIMIT #"
+  },
+  "results" : {
+    "columnTypes" : [ "STRING", "FLOAT64", "FLOAT64", "FLOAT64" ],
+    "columns" : [ "team_name", "avg_points", "avg_rebounds", "avg_assists" ],
+    "truncated" : false,
+    "rowCount" : 5,
+    "columnCount" : 4,
+    "rows" : [ [ "Scarlet Hawks", "89.0", "32.0", "14.0" ], [ "Chippewas", "88.3125", "35.40625", "11.281250000000002" ], [ "Suns", "87.5", "31.0", "16.0" ], [ "Mastodons", "86.939393939393938", "35.212121212121211", "17.45454545454545" ], [ "Thundering Herd", "85.628571428571433", "33.25714285714286", "16.457142857142859" ] ]
+  },
+  "sql" : "SELECT\n  name AS team_name,\n  AVG(points) AS avg_points,\n  AVG(rebounds) AS avg_rebounds,\n  AVG(assists) AS avg_assists\nFROM\n  `bigquery-public-data.ncaa_basketball.mbb_teams_games_sr`\nWHERE\n  season = 2016\nGROUP BY\n  team_name\nORDER BY\n  avg_points DESC\nLIMIT 5",
+  "timestamp" : "2025-11-26T13:12:12.916932",
+  "normalizedSql" : "SELECT NAME AS TEAM_NAME, AVG(POINTS) AS AVG_POINTS, AVG(REBOUNDS) AS AVG_REBOUNDS, AVG(ASSISTS) AS AVG_ASSISTS FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_TEAMS_GAMES_SR` WHERE SEASON = # GROUP BY TEAM_NAME ORDER BY AVG_POINTS DESC LIMIT #"
+}, {
+  "query" : "Can you provide a scatter plot for player performance across seasons 2014 to 2017",
+  "analysis" : {
+    "resultStats" : {
+      "primaryMetricMin" : 0.14634146341463417,
+      "primaryMetricAvg" : 5.837956869199081,
+      "primaryMetric" : "average_points",
+      "primaryDimensionCardinality" : 500,
+      "primaryMetricNonNegative" : true,
+      "numericColumns" : [ "average_points", "average_rebounds" ],
+      "columnCount" : 3,
+      "rowCountBucket" : "huge",
+      "categoricalColumns" : [ "full_name" ],
+      "primaryMetricMax" : 18.413793103448274,
+      "topDimensionValues" : [ "Fallou Ndoye", "Justin Thomas", "Brandon Johnson", "Oliver Tot", "Shack Scott" ],
+      "primaryDimension" : "full_name",
+      "rowCount" : 1000,
+      "hasTemporalDimension" : false,
+      "topMetricRows" : [ {
+        "category" : "Jhivvan Jackson",
+        "value" : 18.413793103448274
+      }, {
+        "category" : "Dennis Smith Jr.",
+        "value" : 18.125
+      }, {
+        "category" : "Anthony Barber",
+        "value" : 17.661764705882355
+      }, {
+        "category" : "Justin Moss",
+        "value" : 17.545454545454547
+      }, {
+        "category" : "Roddy Peters",
+        "value" : 17.309523809523807
+      } ],
+      "bottomMetricRows" : [ {
+        "category" : "Aaron Rohlman",
+        "value" : 0.14634146341463417
+      }, {
+        "category" : "Walker Miller",
+        "value" : 0.25
+      }, {
+        "category" : "James Pyle",
+        "value" : 0.29032258064516125
+      }, {
+        "category" : "Trevon Gross Jr.",
+        "value" : 0.33333333333333337
+      }, {
+        "category" : "Najee Fitzgerald",
+        "value" : 0.35
+      } ]
+    },
+    "responseTemplate" : {
+      "insights" : [ "Jhivvan Jackson leads with 18.41", "Dennis Smith Jr. leads with 18.13", "Anthony Barber leads with 17.66" ],
+      "chartType" : "bubble",
+      "intentLabel" : "comparison",
+      "templateId" : "correlation_bubble",
+      "explanation" : "Bubble size and position represent multiple metrics simultaneously.",
+      "headline" : "Multi-metric comparison"
+    },
+    "selectedChartType" : "bubble",
+    "intent" : {
+      "primaryIntent" : "comparison",
+      "chartTypeScores" : {
+        "bar" : 200.0,
+        "bubble" : 5.0,
+        "pie" : 80.0,
+        "line" : 3.0,
+        "table" : 50.1
+      },
+      "preferredChartType" : "bar",
+      "confidence" : 1.0,
+      "explicitChartType" : null,
+      "explicitRequest" : false,
+      "sqlAnalysis" : {
+        "groupByColumnCount" : 1,
+        "hasLimit" : true,
+        "hasAggregation" : true,
+        "hasTemporalGrouping" : false,
+        "groupByColumns" : [ "full_name" ]
+      }
+    },
+    "normalizedSql" : "SELECT FULL_NAME, AVG(POINTS) AS AVERAGE_POINTS, AVG(REBOUNDS) AS AVERAGE_REBOUNDS FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` WHERE SEASON BETWEEN # AND # AND PLAYED = TRUE GROUP BY FULL_NAME, PLAYER_ID HAVING COUNT(GAME_ID) >= # LIMIT #"
+  },
+  "results" : {
+    "columnTypes" : [ "STRING", "FLOAT64", "FLOAT64" ],
+    "columns" : [ "full_name", "average_points", "average_rebounds" ],
+    "truncated" : true,
+    "rowCount" : 1000,
+    "columnCount" : 3,
+    "totalRows" : 1000,
+    "rows" : [ [ "Silvio De Sousa", "3.9499999999999997", "3.6999999999999997" ], [ "Samuel Dingba", "1.6229508196721305", "2.0483870967741935" ], [ "Aziz Seck", "1.4", "1.5238095238095239" ], [ "Zach Young", "0.52238805970149249", "0.33823529411764713" ], [ "Nathan Bain", "2.2800000000000002", "1.4313725490196079" ], [ "Lachlan Anderson", "1.2608695652173911", "0.91666666666666663" ], [ "Jock Landale", "13.264000000000005", "6.6746031746031749" ], [ "Cole Long", "2.9830508474576272", "2.3666666666666667" ], [ "Sunday Okeke", "0.55", "1.3333333333333333" ], [ "Mark Plousis", "0.45945945945945948", "0.28947368421052627" ], [ "Lee Richmond", "2.0526315789473681", "0.8" ], [ "Brian Coffey II", "1.3333333333333333", "0.54545454545454541" ], [ "Eral Penn", "2.4193548387096779", "2.75" ], [ "Charles Glover", "4.6548672566371687", "1.9741379310344824" ], [ "Dondre Rhoden", "0.559322033898305", "0.54999999999999993" ], [ "Thomas Sanchez", "0.37931034482758619", "0.0" ], [ "C.J. Anderson", "5.1519999999999992", "3.3412698412698405" ], [ "Von Julien", "2.9361702127659575", "1.2083333333333333" ], [ "Eric Hamilton", "2.2826086956521738", "1.4680851063829787" ], [ "Eric Anderson", "1.6734693877551021", "1.32" ], [ "Eric Monroe", "3.10909090909091", "1.3035714285714286" ], [ "Jose Morales", "1.6666666666666665", "0.5" ], [ "Alec Brennan", "2.235294117647058", "1.3883495145631064" ], [ "Sam Jones", "5.3461538461538476", "1.904761904761904" ], [ "Jarrod Simmons", "2.5217391304347827", "1.6666666666666667" ], [ "Tyler Hamilton", "1.8048780487804879", "1.1428571428571428" ], [ "Aaron Jackson", "2.2920353982300883", "1.6140350877192984" ], [ "Davonta Jordan", "4.7121212121212128", "2.388059701492538" ], [ "Kevin McKay", "7.5901639344262284", "4.225806451612903" ], [ "Carson Shanks", "4.9677419354838719", "2.5957446808510629" ], [ "Emondre Rickman", "3.1590909090909087", "2.9438202247191017" ], [ "Mack Mercer", "5.6097560975609762", "2.3734939759036142" ], [ "Keenan Simmons", "5.8640776699029136", "5.0096153846153841" ], [ "Andre Statam", "3.609375", "1.9384615384615391" ], [ "D.J. Ursery", "5.0410958904109586", "2.310810810810811" ], [ "Jordan Reed", "5.2999999999999989", "1.9436619718309862" ], [ "Isaiah Banks", "2.5", "1.2380952380952381" ], [ "Cameron Lewis", "2.7027027027027031", "2.333333333333333" ], [ "Van Rolle", "1.4545454545454546", "0.26086956521739135" ], [ "Denzel Keyes", "7.5822784810126587", "5.35" ], [ "Najee Fitzgerald", "0.35", "0.5714285714285714" ], [ "Demetrice Clopton", "1.6521739130434783", "1.5000000000000002" ], [ "Dwain Whitfield", "0.79411764705882359", "1.1884057971014497" ], [ "Trevor Stanback", "0.7857142857142857", "0.75862068965517238" ], [ "Hayes Garrity", "3.0399999999999996", "1.0769230769230769" ], [ "Brendan Rumel", "3.304347826086957", "1.4166666666666667" ], [ "Justin Strings", "13.305084745762711", "5.2268907563025238" ], [ "James Herrick", "1.08", "1.0392156862745097" ], [ "Marcus Graves", "11.162162162162163", "3.186666666666667" ], [ "Tyler Loose", "0.48571428571428571", "0.971830985915493" ], [ "Isaac Johnson", "8.25925925925926", "4.4642857142857135" ], [ "James Claar", "1.2727272727272727", "0.99999999999999989" ], [ "Evan Wesenberg", "0.9285714285714286", "0.689655172413793" ], [ "Sam Walters", "1.2058823529411764", "0.39999999999999997" ], [ "Brett Prahl", "5.4913793103448265", "2.8632478632478628" ], [ "Eric Stafford", "3.7524752475247536", "2.0196078431372544" ], [ "Scott Muirhead", "1.1875", "0.27272727272727271" ], [ "David-Lee Jones Jr.", "3.1379310344827585", "0.76666666666666672" ], [ "Bennett Holley", "2.7733333333333334", "1.1025641025641029" ], [ "Jacob Broussard", "0.875", "0.21212121212121213" ], [ "Ezra Talbert", "3.3333333333333339", "1.5100000000000007" ], [ "Zach Farguhar", "1.125", "0.27272727272727282" ], [ "Ethan Kay", "5.0333333333333341", "1.0" ], [ "Garrett Collins", "2.4255319148936172", "0.89583333333333326" ], [ "Garret Collins", "1.7391304347826086", "0.75000000000000011" ], [ "Jason Williams", "2.4814814814814818", "0.81818181818181823" ], [ "Matthew Jiles", "0.71428571428571419", "0.38356164383561653" ], [ "Myles Thornton", "0.4375", "0.29411764705882348" ], [ "Stevie Repichowski", "4.2533333333333321", "1.2894736842105263" ], [ "Will Gates Jr.", "4.5000000000000009", "1.1702127659574468" ], [ "Trey Lenox", "0.70370370370370394", "0.72727272727272707" ], [ "Hansel Atencia", "1.4", "0.74999999999999989" ], [ "K.J. Maura", "8.4337349397590327", "2.3012048192771082" ], [ "Dusan Perovic", "5.8404255319148932", "2.191489361702128" ], [ "Jaron Cornish", "8.5925925925925917", "3.7037037037037037" ], [ "Benedikt Haid", "1.48", "0.8" ], [ "Japhet Kadji", "4.1898734177215191", "2.7721518987341778" ], [ "Ronnie Gombe", "3.5555555555555549", "3.6296296296296293" ], [ "Mantvydas Urmilevicius", "3.5", "3.3" ], [ "Ivan Raut", "8.387096774193548", "3.645161290322581" ], [ "Jon Axel Gudmundsson", "10.796874999999998", "5.0625000000000018" ], [ "Arnaldo Toro", "6.1764705882352935", "5.5735294117647047" ], [ "Hamdy Mohamed", "5.9117647058823524", "3.7941176470588238" ], [ "Djordjije Mumin", "1.838235294117647", "0.76470588235294112" ], [ "Tacko Fall", "9.6707317073170724", "7.7560975609756113" ], [ "Sammis Reyes", "0.75", "1.5000000000000002" ], [ "Ruben Guerrero", "5.3000000000000007", "5.1333333333333311" ], [ "Jack Salt", "3.1000000000000005", "3.3444444444444446" ], [ "Matz Stockman", "2.1555555555555559", "1.5777777777777779" ], [ "Sam Japhet-Mathias", "0.75", "0.95833333333333348" ], [ "Chris Koumadje", "2.4722222222222223", "1.7777777777777779" ], [ "Gabe Stefanini", "5.9259259259259256", "1.9259259259259258" ], [ "Lukas Meisner", "6.9866666666666664", "5.3066666666666658" ], [ "Chris Caird", "6.935483870967742", "2.064516129032258" ], [ "Dwayne Lautier-Ogunleye", "7.8842105263157904", "3.8947368421052633" ], [ "Cheikh Mbacke Diong", "1.9310344827586208", "2.4137931034482758" ], [ "Robin Jorch", "1.9000000000000004", "1.4625" ], [ "Acoydan McCarthy", "0.78260869565217384", "0.52173913043478271" ], [ "Joan Duran", "2.4", "1.5500000000000003" ], [ "Stephaun Adams", "3.1219512195121952", "2.5853658536585367" ] ]
+  },
+  "sql" : "SELECT\n  full_name,\n  AVG(points) AS average_points,\n  AVG(rebounds) AS average_rebounds\nFROM\n  `bigquery-public-data.ncaa_basketball.mbb_players_games_sr`\nWHERE\n  season BETWEEN 2014 AND 2017\n  AND played = TRUE\nGROUP BY\n  full_name,\n  player_id\nHAVING\n  COUNT(game_id) >= 20\nLIMIT 1000",
+  "timestamp" : "2025-11-26T13:36:52.290596",
+  "normalizedSql" : "SELECT FULL_NAME, AVG(POINTS) AS AVERAGE_POINTS, AVG(REBOUNDS) AS AVERAGE_REBOUNDS FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` WHERE SEASON BETWEEN # AND # AND PLAYED = TRUE GROUP BY FULL_NAME, PLAYER_ID HAVING COUNT(GAME_ID) >= # LIMIT #"
+}, {
+  "query" : "Can you provide a scatter plot for player performance across seasons 1990 to 2000?",
+  "analysis" : {
+    "resultStats" : {
+      "primaryMetricMin" : 0.49999999999999994,
+      "primaryMetricAvg" : 7.368613952453039,
+      "primaryMetric" : "average_points",
+      "primaryDimensionCardinality" : 500,
+      "primaryMetricNonNegative" : true,
+      "numericColumns" : [ "average_points", "average_rebounds" ],
+      "columnCount" : 3,
+      "rowCountBucket" : "huge",
+      "categoricalColumns" : [ "player_name" ],
+      "primaryMetricMax" : 21.919354838709683,
+      "topDimensionValues" : [ "Leron Black", "Hassan Hussein", "Justin Thomas", "Guilien Smith", "Oliver Tot" ],
+      "primaryDimension" : "player_name",
+      "rowCount" : 500,
+      "hasTemporalDimension" : false,
+      "topMetricRows" : [ {
+        "category" : "James Daniel",
+        "value" : 21.919354838709683
+      }, {
+        "category" : "Matt Morgan",
+        "value" : 19.831325301204824
+      }, {
+        "category" : "Jon Elmore",
+        "value" : 19.64583333333333
+      }, {
+        "category" : "Olivier Hanlan",
+        "value" : 19.015624999999996
+      }, {
+        "category" : "Evan Boudreaux",
+        "value" : 17.592592592592602
+      } ],
+      "bottomMetricRows" : [ {
+        "category" : "Desmond Hubert",
+        "value" : 0.49999999999999994
+      }, {
+        "category" : "Zach Young",
+        "value" : 0.5223880597014925
+      }, {
+        "category" : "Rashed Anthony",
+        "value" : 0.5966386554621848
+      }, {
+        "category" : "Max Twyman",
+        "value" : 0.8596491228070176
+      }, {
+        "category" : "Garvey Melmed",
+        "value" : 0.9444444444444445
+      } ]
+    },
+    "responseTemplate" : {
+      "insights" : [ "James Daniel leads with 21.92", "Matt Morgan leads with 19.83", "Jon Elmore leads with 19.65" ],
+      "chartType" : "bubble",
+      "intentLabel" : "comparison",
+      "templateId" : "correlation_bubble",
+      "explanation" : "Bubble size and position represent multiple metrics simultaneously.",
+      "headline" : "Multi-metric comparison"
+    },
+    "selectedChartType" : "bubble",
+    "intent" : {
+      "primaryIntent" : "comparison",
+      "chartTypeScores" : {
+        "bar" : 200.0,
+        "bubble" : 5.0,
+        "pie" : 80.0,
+        "line" : 3.0,
+        "table" : 50.1
+      },
+      "preferredChartType" : "bar",
+      "confidence" : 1.0,
+      "explicitChartType" : null,
+      "explicitRequest" : false,
+      "sqlAnalysis" : {
+        "groupByColumnCount" : 1,
+        "hasLimit" : true,
+        "hasAggregation" : true,
+        "hasTemporalGrouping" : false,
+        "groupByColumns" : [ "player_name" ]
+      }
+    },
+    "normalizedSql" : "SELECT FULL_NAME AS PLAYER_NAME, AVG(POINTS) AS AVERAGE_POINTS, AVG(REBOUNDS) AS AVERAGE_REBOUNDS FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` WHERE SEASON >= # AND PLAYED = TRUE GROUP BY PLAYER_NAME HAVING COUNT(GAME_ID) > # LIMIT #"
+  },
+  "results" : {
+    "columnTypes" : [ "STRING", "FLOAT64", "FLOAT64" ],
+    "columns" : [ "player_name", "average_points", "average_rebounds" ],
+    "truncated" : true,
+    "rowCount" : 500,
+    "columnCount" : 3,
+    "totalRows" : 500,
+    "rows" : [ [ "Luke Meyer", "7.37313432835821", "4.24626865671642" ], [ "Will Adams", "3.8554216867469884", "1.168674698795181" ], [ "Justin Miller", "8.9545454545454568", "4.3636363636363642" ], [ "Mike Thomas", "9.23469387755102", "4.9387755102040805" ], [ "Nick Rogers", "3.4576271186440675", "1.1525423728813557" ], [ "Bryson Williams", "10.469696969696969", "5.1818181818181808" ], [ "Chris Lewis", "10.253968253968255", "5.2698412698412689" ], [ "James Richardson", "9.0833333333333339", "1.8166666666666669" ], [ "Christian Jones", "7.2307692307692308", "4.6282051282051277" ], [ "TreVaughn Wilkerson", "1.964285714285714", "2.1428571428571423" ], [ "Karem Kanter", "3.9999999999999996", "1.892857142857143" ], [ "Zach Young", "0.52238805970149249", "0.33823529411764713" ], [ "Kevin Mickle", "4.1011235955056184", "2.7666666666666679" ], [ "Ryan Gomes", "3.0634920634920637", "1.3906250000000002" ], [ "Charles Glover", "4.6548672566371687", "1.9741379310344824" ], [ "Eric Monroe", "3.10909090909091", "1.3035714285714286" ], [ "John Kiser", "2.34", "2.9215686274509802" ], [ "Emondre Rickman", "3.1590909090909087", "2.9438202247191017" ], [ "Austin Ruder", "7.7282608695652151", "1.935483870967742" ], [ "Mack Mercer", "5.6097560975609762", "2.3734939759036142" ], [ "Daniel Norl", "8.1714285714285726", "2.169014084507042" ], [ "Montana Byrd", "3.7058823529411766", "1.6310679611650483" ], [ "Jordan Reed", "6.2169811320754711", "3.3457943925233637" ], [ "Keith Pinckney", "1.6551724137931032", "0.42372881355932213" ], [ "Avery Patterson", "4.3424657534246585", "1.5333333333333334" ], [ "Denzel Keyes", "7.4567901234567895", "5.2560975609756087" ], [ "Isaac Johnson", "7.3999999999999995", "6.6373626373626351" ], [ "Jared Samuelson", "4.3296703296703294", "1.543478260869565" ], [ "Arell Hennings", "2.6440677966101696", "0.64999999999999991" ], [ "Michael Onyebalu", "3.0571428571428578", "1.9295774647887327" ], [ "DeShawndre Black", "4.370967741935484", "1.6031746031746035" ], [ "Stephen Brown", "10.147286821705425", "2.9465648854961835" ], [ "Max Mahoney", "9.6923076923076952", "4.1132075471698117" ], [ "James Washington", "4.67142857142857", "1.6197183098591548" ], [ "Larenz Stalcup", "1.5961538461538463", "1.1132075471698113" ], [ "Darius Bolstad", "3.6527777777777772", "2.8493150684931505" ], [ "Colin Hale", "1.8245614035087721", "1.0" ], [ "Stevie Repichowski", "4.2875000000000005", "1.2345679012345676" ], [ "Brandon Watkins", "2.721311475409836", "2.2213114754098364" ], [ "John Carroll", "6.8448275862068986", "3.9137931034482762" ], [ "Mawdo Sallah", "3.763888888888888", "3.4166666666666674" ], [ "Christian Sengfelder", "11.496000000000004", "6.0000000000000009" ], [ "Jon Axel Gudmundsson", "10.796874999999998", "5.0625000000000018" ], [ "Pierfrancesco Oliva", "5.2968749999999991", "5.203125" ], [ "Ernest Aflakpui", "3.8072289156626509", "4.024096385542169" ], [ "Ruben Guerrero", "5.3000000000000007", "5.1333333333333311" ], [ "Ervins Meznieks", "2.5882352941176476", "1.5294117647058825" ], [ "Martinas Geben", "5.231481481481481", "4.2037037037037033" ], [ "Legend Robertin", "1.6842105263157894", "1.5438596491228074" ], [ "Anas Mahmoud", "4.42857142857143", "3.4537815126050426" ], [ "Dwayne Lautier-Ogunleye", "7.8842105263157904", "3.8947368421052633" ], [ "Muusa Dama", "9.5084745762711851", "7.8644067796610173" ], [ "James Siakam", "8.2153846153846128", "5.6153846153846132" ], [ "Tobias Sjoberg", "4.118644067796609", "4.406779661016949" ], [ "Jonathan Kasibabu", "7.0625000000000018", "5.3124999999999982" ], [ "Alain Chigha", "1.704545454545455", "1.7272727272727275" ], [ "Jahir Cabeza", "5.8305084745762707", "3.5593220338983058" ], [ "Malick Kone", "2.7272727272727271", "2.2363636363636359" ], [ "Issa Thiam", "5.4923076923076914", "3.1076923076923073" ], [ "Candido Sa", "2.5468750000000004", "2.984375" ], [ "Ivan Bender", "3.9122807017543857", "2.859649122807018" ], [ "Gary Browne", "6.4218750000000009", "2.15625" ], [ "Lucas N'Guessan", "1.9433962264150944", "1.8301886792452833" ], [ "Cheikh N'diaye", "1.4375", "1.15" ], [ "Zigmars Raimo", "2.6415094339622645", "1.8490566037735852" ], [ "Arkim Robertson", "4.5901639344262311", "4.3442622950819665" ], [ "Clint Robinson", "4.753623188405796", "4.6376811594202909" ], [ "Jaro Moravek", "1.964285714285714", "1.7321428571428572" ], [ "Georgie Pacheco-Ortiz", "9.2916666666666643", "2.7777777777777768" ], [ "Oliver Tot", "1.2410714285714284", "1.0446428571428574" ], [ "Marc Gosselin", "6.9270833333333321", "5.7187499999999982" ], [ "Ehab Amin", "10.421568627450975", "4.3725490196078436" ], [ "Mike Smith", "15.745454545454548", "2.3454545454545457" ], [ "Isaiah Taylor", "13.446808510638299", "3.0212765957446814" ], [ "Shawn Williams", "8.3787878787878771", "2.4545454545454546" ], [ "Justin Jackson", "12.545918367346941", "5.1836734693877542" ], [ "Kyle Anderson", "14.492063492063492", "6.6349206349206327" ], [ "Bosko Kostur", "8.2264150943396235", "3.2830188679245271" ], [ "Callum Barker", "3.1095890410958904", "2.7397260273972597" ], [ "Jack Purchase", "7.7910447761194028", "4.2686567164179108" ], [ "Kyle Clark", "3.6428571428571423", "1.8999999999999995" ], [ "Emmett Naar", "9.9481481481481477", "2.6444444444444444" ], [ "Keanu Pinder", "2.2835820895522385", "2.4925373134328357" ], [ "Fabijan Krslovic", "6.0606060606060588", "5.0909090909090917" ], [ "Jesse Hunt", "3.5783132530120478", "2.8192771084337349" ], [ "Chima Moneke", "15.741379310344827", "9.32758620689655" ], [ "Myles Cherry", "2.8999999999999995", "3.4666666666666668" ], [ "Olivier Hanlan", "19.015624999999996", "3.8281249999999996" ], [ "Malcolm Duvivier", "8.4960629921259816", "2.1338582677165348" ], [ "Francis Kiapway", "6.950819672131149", "1.5000000000000002" ], [ "Tevonn Walker", "11.330645161290322", "4.2661290322580676" ], [ "Tanveer Bhullar", "3.6516853932584272", "3.1685393258426959" ], [ "Koby McEwen", "15.229508196721312", "5.2786885245901631" ], [ "Brandon Cyrus", "6.7301587301587311", "3.8095238095238098" ], [ "Kimbal Mackenzie", "8.31111111111111", "1.7444444444444438" ], [ "Emmanuel Ndumanya", "3.54054054054054", "4.5945945945945939" ], [ "Milos Vranes", "5.83606557377049", "3.62295081967213" ], [ "Vasa Pusica", "10.478723404255318", "3.2340425531914887" ], [ "Matija Milin", "7.5595238095238111", "3.9880952380952377" ], [ "Nedeljko Prijovic", "4.166666666666667", "3.5757575757575757" ] ]
+  },
+  "sql" : "SELECT\n  full_name AS player_name,\n  AVG(points) AS average_points,\n  AVG(rebounds) AS average_rebounds\nFROM\n  `bigquery-public-data.ncaa_basketball.mbb_players_games_sr`\nWHERE\n  season >= 2013 AND played = TRUE\nGROUP BY\n  player_name\nHAVING\n  COUNT(game_id) > 50\nLIMIT 500",
+  "timestamp" : "2025-11-26T13:38:12.620137",
+  "normalizedSql" : "SELECT FULL_NAME AS PLAYER_NAME, AVG(POINTS) AS AVERAGE_POINTS, AVG(REBOUNDS) AS AVERAGE_REBOUNDS FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` WHERE SEASON >= # AND PLAYED = TRUE GROUP BY PLAYER_NAME HAVING COUNT(GAME_ID) > # LIMIT #"
+}, {
+  "query" : "Can you provide a scatter plot for player performance across seasons 1990 to 2000 for three pointers vs 2 pointers?",
+  "analysis" : {
+    "resultStats" : {
+      "primaryMetricMin" : null,
+      "primaryMetricAvg" : null,
+      "primaryMetric" : null,
+      "primaryDimensionCardinality" : 0,
+      "primaryMetricNonNegative" : true,
+      "numericColumns" : [ ],
+      "columnCount" : 0,
+      "rowCountBucket" : "empty",
+      "categoricalColumns" : [ ],
+      "primaryMetricMax" : null,
+      "topDimensionValues" : [ ],
+      "primaryDimension" : null,
+      "rowCount" : 0,
+      "hasTemporalDimension" : false,
+      "topMetricRows" : [ ],
+      "bottomMetricRows" : [ ]
+    },
+    "responseTemplate" : {
+      "insights" : [ ],
+      "chartType" : "table",
+      "intentLabel" : "table",
+      "templateId" : "table_default",
+      "explanation" : "Showing 0 rows and 0 columns.",
+      "headline" : "Detailed table results"
+    },
+    "selectedChartType" : "table",
+    "intent" : {
+      "primaryIntent" : "comparison",
+      "chartTypeScores" : {
+        "bar" : 203.2,
+        "bubble" : 5.0,
+        "pie" : 80.0,
+        "line" : 3.0,
+        "table" : 0.1
+      },
+      "preferredChartType" : "bar",
+      "confidence" : 1.0,
+      "explicitChartType" : null,
+      "explicitRequest" : false,
+      "sqlAnalysis" : {
+        "groupByColumnCount" : 1,
+        "hasLimit" : true,
+        "hasAggregation" : true,
+        "hasTemporalGrouping" : false,
+        "groupByColumns" : [ "full_name" ]
+      }
+    },
+    "normalizedSql" : "SELECT FULL_NAME, SUM(TWO_POINTS_MADE) AS TOTAL_TWO_POINTERS, SUM(THREE_POINTS_MADE) AS TOTAL_THREE_POINTERS FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` WHERE SEASON BETWEEN # AND # GROUP BY FULL_NAME, PLAYER_ID HAVING SUM(TWO_POINTS_MADE) > # AND SUM(THREE_POINTS_MADE) > # LIMIT #"
+  },
+  "results" : {
+    "columnTypes" : [ "STRING", "INT64", "INT64" ],
+    "columns" : [ "full_name", "total_two_pointers", "total_three_pointers" ],
+    "truncated" : false,
+    "rowCount" : 0,
+    "columnCount" : 3,
+    "rows" : [ ]
+  },
+  "sql" : "SELECT\n  full_name,\n  SUM(two_points_made) AS total_two_pointers,\n  SUM(three_points_made) AS total_three_pointers\nFROM\n  `bigquery-public-data.ncaa_basketball.mbb_players_games_sr`\nWHERE\n  season BETWEEN 1990 AND 2000\nGROUP BY\n  full_name,\n  player_id\nHAVING\n  SUM(two_points_made) > 50\n  AND SUM(three_points_made) > 50\nLIMIT 500",
+  "timestamp" : "2025-11-26T13:39:07.316699",
+  "normalizedSql" : "SELECT FULL_NAME, SUM(TWO_POINTS_MADE) AS TOTAL_TWO_POINTERS, SUM(THREE_POINTS_MADE) AS TOTAL_THREE_POINTERS FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` WHERE SEASON BETWEEN # AND # GROUP BY FULL_NAME, PLAYER_ID HAVING SUM(TWO_POINTS_MADE) > # AND SUM(THREE_POINTS_MADE) > # LIMIT #"
+}, {
+  "query" : "Show a line chart comparing average points per game by season for Tar Heels, Bluejays, and Shockers from 2013 to 2017.",
+  "analysis" : {
+    "resultStats" : {
+      "primaryMetricMin" : 66.88235294117645,
+      "primaryMetricAvg" : 78.29909925043052,
+      "primaryMetric" : "average_points_per_game",
+      "primaryDimensionCardinality" : 3,
+      "primaryMetricNonNegative" : true,
+      "numericColumns" : [ "season", "average_points_per_game" ],
+      "columnCount" : 3,
+      "rowCountBucket" : "small",
+      "categoricalColumns" : [ "team_name" ],
+      "primaryMetricMax" : 84.42499999999997,
+      "topDimensionValues" : [ "Tar Heels", "Shockers", "Bluejays" ],
+      "primaryDimension" : "team_name",
+      "rowCount" : 15,
+      "hasTemporalDimension" : true,
+      "topMetricRows" : [ {
+        "category" : "Tar Heels",
+        "value" : 84.42499999999997
+      }, {
+        "category" : "Bluejays",
+        "value" : 83.51515151515152
+      }, {
+        "category" : "Tar Heels",
+        "value" : 82.77499999999998
+      }, {
+        "category" : "Shockers",
+        "value" : 82.75757575757575
+      }, {
+        "category" : "Bluejays",
+        "value" : 81.82857142857142
+      } ],
+      "bottomMetricRows" : [ {
+        "category" : "Bluejays",
+        "value" : 66.88235294117645
+      }, {
+        "category" : "Shockers",
+        "value" : 70.28571428571429
+      }, {
+        "category" : "Shockers",
+        "value" : 72.42857142857143
+      }, {
+        "category" : "Shockers",
+        "value" : 75.16666666666666
+      }, {
+        "category" : "Tar Heels",
+        "value" : 76.58823529411765
+      } ]
+    },
+    "responseTemplate" : {
+      "insights" : [ "Tar Heels leads with 84.42", "Bluejays leads with 83.52", "Tar Heels leads with 82.77" ],
+      "chartType" : "line",
+      "intentLabel" : "trend",
+      "templateId" : "trend_line",
+      "explanation" : "This line chart highlights how Average Points Per Game changes across Team Name (min 66.88, max 84.42).",
+      "headline" : "Trend of Average Points Per Game across Team Name"
+    },
+    "selectedChartType" : "multi_line",
+    "intent" : {
+      "primaryIntent" : "trend",
+      "chartTypeScores" : {
+        "bar" : 135.0,
+        "bubble" : 5.0,
+        "pie" : 80.0,
+        "line" : 230.0,
+        "table" : 0.1
+      },
+      "preferredChartType" : "line",
+      "confidence" : 1.0,
+      "explicitChartType" : "line",
+      "explicitRequest" : true,
+      "sqlAnalysis" : {
+        "groupByColumnCount" : 1,
+        "hasLimit" : false,
+        "hasAggregation" : true,
+        "hasTemporalGrouping" : true,
+        "groupByColumns" : [ "season" ]
+      }
+    },
+    "normalizedSql" : "SELECT T.SEASON, T.NAME AS TEAM_NAME, AVG(T.POINTS_GAME) AS AVERAGE_POINTS_PER_GAME FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_TEAMS_GAMES_SR` AS T WHERE T.SEASON BETWEEN # AND # AND T.NAME IN ('', '', '') GROUP BY T.SEASON, T.NAME ORDER BY T.SEASON, T.NAME"
+  },
+  "results" : {
+    "columnTypes" : [ "INT64", "STRING", "FLOAT64" ],
+    "columns" : [ "season", "team_name", "average_points_per_game" ],
+    "truncated" : false,
+    "rowCount" : 15,
+    "columnCount" : 3,
+    "rows" : [ [ "2013", "Bluejays", "77.916666666666657" ], [ "2013", "Shockers", "75.166666666666657" ], [ "2013", "Tar Heels", "76.588235294117652" ], [ "2014", "Bluejays", "66.88235294117645" ], [ "2014", "Shockers", "70.285714285714292" ], [ "2014", "Tar Heels", "77.71052631578948" ], [ "2015", "Bluejays", "79.638888888888886" ], [ "2015", "Shockers", "72.428571428571431" ], [ "2015", "Tar Heels", "82.774999999999977" ], [ "2016", "Bluejays", "81.828571428571422" ], [ "2016", "Shockers", "81.000000000000014" ], [ "2016", "Tar Heels", "84.424999999999969" ], [ "2017", "Bluejays", "83.515151515151516" ], [ "2017", "Shockers", "82.757575757575751" ], [ "2017", "Tar Heels", "81.567567567567565" ] ]
+  },
+  "sql" : "SELECT\n  t.season,\n  t.name AS team_name,\n  avg(t.points_game) AS average_points_per_game\nFROM\n  `bigquery-public-data.ncaa_basketball.mbb_teams_games_sr` AS t\nWHERE\n  t.season BETWEEN 2013 AND 2017\n  AND t.name IN ('Tar Heels', 'Bluejays', 'Shockers')\nGROUP BY\n  t.season,\n  t.name\nORDER BY\n  t.season,\n  t.name",
+  "timestamp" : "2025-12-15T15:56:57.587513",
+  "normalizedSql" : "SELECT T.SEASON, T.NAME AS TEAM_NAME, AVG(T.POINTS_GAME) AS AVERAGE_POINTS_PER_GAME FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_TEAMS_GAMES_SR` AS T WHERE T.SEASON BETWEEN # AND # AND T.NAME IN ('', '', '') GROUP BY T.SEASON, T.NAME ORDER BY T.SEASON, T.NAME"
+}, {
+  "query" : "Show a bar chart comparing average points per game by season for Tar Heels, Bluejays, and Shockers from 2013 to 2017.",
+  "analysis" : {
+    "resultStats" : {
+      "primaryMetricMin" : 66.88235294117645,
+      "primaryMetricAvg" : 78.29909925043052,
+      "primaryMetric" : "average_points_per_game",
+      "primaryDimensionCardinality" : 3,
+      "primaryMetricNonNegative" : true,
+      "numericColumns" : [ "season", "average_points_per_game" ],
+      "columnCount" : 3,
+      "rowCountBucket" : "small",
+      "categoricalColumns" : [ "team_name" ],
+      "primaryMetricMax" : 84.42499999999997,
+      "topDimensionValues" : [ "Tar Heels", "Shockers", "Bluejays" ],
+      "primaryDimension" : "team_name",
+      "rowCount" : 15,
+      "hasTemporalDimension" : true,
+      "topMetricRows" : [ {
+        "category" : "Tar Heels",
+        "value" : 84.42499999999997
+      }, {
+        "category" : "Bluejays",
+        "value" : 83.51515151515152
+      }, {
+        "category" : "Tar Heels",
+        "value" : 82.77499999999998
+      }, {
+        "category" : "Shockers",
+        "value" : 82.75757575757575
+      }, {
+        "category" : "Bluejays",
+        "value" : 81.82857142857142
+      } ],
+      "bottomMetricRows" : [ {
+        "category" : "Bluejays",
+        "value" : 66.88235294117645
+      }, {
+        "category" : "Shockers",
+        "value" : 70.28571428571429
+      }, {
+        "category" : "Shockers",
+        "value" : 72.42857142857143
+      }, {
+        "category" : "Shockers",
+        "value" : 75.16666666666666
+      }, {
+        "category" : "Tar Heels",
+        "value" : 76.58823529411765
+      } ]
+    },
+    "responseTemplate" : {
+      "insights" : [ "Tar Heels leads with 84.42", "Bluejays leads with 83.52", "Tar Heels leads with 82.77" ],
+      "chartType" : "bar",
+      "intentLabel" : "comparison",
+      "templateId" : "comparison_bar",
+      "explanation" : "Bars show how each Team Name ranks based on Average Points Per Game. 15 rows total.",
+      "headline" : "Comparing Average Points Per Game by Team Name"
+    },
+    "selectedChartType" : "bar",
+    "intent" : {
+      "primaryIntent" : "comparison",
+      "chartTypeScores" : {
+        "bar" : 235.0,
+        "bubble" : 5.0,
+        "pie" : 80.0,
+        "line" : 130.0,
+        "table" : 0.1
+      },
+      "preferredChartType" : "bar",
+      "confidence" : 1.0,
+      "explicitChartType" : "bar",
+      "explicitRequest" : true,
+      "sqlAnalysis" : {
+        "groupByColumnCount" : 1,
+        "hasLimit" : false,
+        "hasAggregation" : true,
+        "hasTemporalGrouping" : true,
+        "groupByColumns" : [ "season" ]
+      }
+    },
+    "normalizedSql" : "SELECT SEASON, NAME AS TEAM_NAME, AVG(POINTS_GAME) AS AVERAGE_POINTS_PER_GAME FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_TEAMS_GAMES_SR` WHERE NAME IN ('', '', '') AND SEASON BETWEEN # AND # GROUP BY SEASON, TEAM_NAME ORDER BY SEASON, TEAM_NAME"
+  },
+  "results" : {
+    "columnTypes" : [ "INT64", "STRING", "FLOAT64" ],
+    "columns" : [ "season", "team_name", "average_points_per_game" ],
+    "truncated" : false,
+    "rowCount" : 15,
+    "columnCount" : 3,
+    "rows" : [ [ "2013", "Bluejays", "77.916666666666657" ], [ "2013", "Shockers", "75.166666666666657" ], [ "2013", "Tar Heels", "76.588235294117652" ], [ "2014", "Bluejays", "66.88235294117645" ], [ "2014", "Shockers", "70.285714285714292" ], [ "2014", "Tar Heels", "77.71052631578948" ], [ "2015", "Bluejays", "79.638888888888886" ], [ "2015", "Shockers", "72.428571428571431" ], [ "2015", "Tar Heels", "82.774999999999977" ], [ "2016", "Bluejays", "81.828571428571422" ], [ "2016", "Shockers", "81.000000000000014" ], [ "2016", "Tar Heels", "84.424999999999969" ], [ "2017", "Bluejays", "83.515151515151516" ], [ "2017", "Shockers", "82.757575757575751" ], [ "2017", "Tar Heels", "81.567567567567565" ] ]
+  },
+  "sql" : "SELECT\n  season,\n  name AS team_name,\n  AVG(points_game) AS average_points_per_game\nFROM\n  `bigquery-public-data.ncaa_basketball.mbb_teams_games_sr`\nWHERE\n  name IN ('Tar Heels', 'Bluejays', 'Shockers') AND season BETWEEN 2013 AND 2017\nGROUP BY\n  season,\n  team_name\nORDER BY\n  season,\n  team_name",
+  "timestamp" : "2025-12-15T15:57:15.853793",
+  "normalizedSql" : "SELECT SEASON, NAME AS TEAM_NAME, AVG(POINTS_GAME) AS AVERAGE_POINTS_PER_GAME FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_TEAMS_GAMES_SR` WHERE NAME IN ('', '', '') AND SEASON BETWEEN # AND # GROUP BY SEASON, TEAM_NAME ORDER BY SEASON, TEAM_NAME"
+}, {
+  "query" : "Show the trend of average points per game for Jordan Howard across all games in season 2014-2015 he played.",
+  "analysis" : {
+    "resultStats" : {
+      "primaryMetricMin" : 0.0,
+      "primaryMetricAvg" : 13.411764705882353,
+      "primaryMetric" : "points_scored",
+      "primaryDimensionCardinality" : 33,
+      "primaryMetricNonNegative" : true,
+      "numericColumns" : [ "points_scored" ],
+      "columnCount" : 2,
+      "rowCountBucket" : "medium",
+      "categoricalColumns" : [ "scheduled_date" ],
+      "primaryMetricMax" : 27.0,
+      "topDimensionValues" : [ "2014-12-06", "2014-11-15", "2014-11-22", "2014-12-30", "2015-02-21" ],
+      "primaryDimension" : "scheduled_date",
+      "rowCount" : 36,
+      "hasTemporalDimension" : true,
+      "topMetricRows" : [ {
+        "category" : "2015-02-04",
+        "value" : 27.0
+      }, {
+        "category" : "2014-11-22",
+        "value" : 21.0
+      }, {
+        "category" : "2014-12-06",
+        "value" : 21.0
+      }, {
+        "category" : "2014-11-29",
+        "value" : 20.0
+      }, {
+        "category" : "2015-02-07",
+        "value" : 20.0
+      } ],
+      "bottomMetricRows" : [ {
+        "category" : "2014-11-15",
+        "value" : 0.0
+      }, {
+        "category" : "2014-11-22",
+        "value" : 0.0
+      }, {
+        "category" : "2014-12-03",
+        "value" : 0.0
+      }, {
+        "category" : "2014-12-06",
+        "value" : 0.0
+      }, {
+        "category" : "2014-12-16",
+        "value" : 0.0
+      } ]
+    },
+    "responseTemplate" : {
+      "insights" : [ ],
+      "chartType" : "table",
+      "intentLabel" : "table",
+      "templateId" : "table_default",
+      "explanation" : "Showing 36 rows and 2 columns.",
+      "headline" : "Detailed table results"
+    },
+    "selectedChartType" : "table",
+    "intent" : {
+      "primaryIntent" : "table",
+      "chartTypeScores" : {
+        "bar" : 15.0,
+        "bubble" : 0.0,
+        "pie" : 0.0,
+        "line" : 34.5,
+        "table" : 75.1
+      },
+      "preferredChartType" : "table",
+      "confidence" : 1.0,
+      "explicitChartType" : null,
+      "explicitRequest" : false,
+      "sqlAnalysis" : {
+        "groupByColumnCount" : 0,
+        "hasLimit" : false,
+        "hasAggregation" : false,
+        "hasTemporalGrouping" : false,
+        "groupByColumns" : [ ]
+      }
+    },
+    "normalizedSql" : "SELECT T.SCHEDULED_DATE, T.POINTS AS POINTS_SCORED FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` AS T WHERE T.FULL_NAME = '' AND T.SEASON = # AND T.PLAYED = TRUE ORDER BY T.SCHEDULED_DATE"
+  },
+  "results" : {
+    "columnTypes" : [ "DATE", "INT64" ],
+    "columns" : [ "scheduled_date", "points_scored" ],
+    "truncated" : false,
+    "rowCount" : 36,
+    "columnCount" : 2,
+    "rows" : [ [ "2014-11-15", "0" ], [ "2014-11-15", "19" ], [ "2014-11-16", "14" ], [ "2014-11-19", "10" ], [ "2014-11-22", "0" ], [ "2014-11-22", "21" ], [ "2014-11-26", "18" ], [ "2014-11-29", "20" ], [ "2014-12-02", "10" ], [ "2014-12-03", "0" ], [ "2014-12-06", "0" ], [ "2014-12-06", "21" ], [ "2014-12-12", null ], [ "2014-12-16", "0" ], [ "2014-12-18", "12" ], [ "2014-12-21", "15" ], [ "2014-12-30", "9" ], [ "2015-01-04", "17" ], [ "2015-01-07", "12" ], [ "2015-01-11", "13" ], [ "2015-01-14", "16" ], [ "2015-01-20", "10" ], [ "2015-01-24", "18" ], [ "2015-01-27", "16" ], [ "2015-02-04", "27" ], [ "2015-02-07", "20" ], [ "2015-02-11", "16" ], [ "2015-02-14", "17" ], [ "2015-02-17", "20" ], [ "2015-02-21", "13" ], [ "2015-02-25", "13" ], [ "2015-02-28", "17" ], [ "2015-03-03", "11" ], [ "2015-03-06", "16" ], [ "2015-03-07", null ], [ "2015-03-08", "15" ] ]
+  },
+  "sql" : "SELECT\n  t.scheduled_date,\n  t.points AS points_scored\nFROM\n  `bigquery-public-data.ncaa_basketball.mbb_players_games_sr` AS t\nWHERE\n  t.full_name = 'Jordan Howard'\n  AND t.season = 2014\n  AND t.played = TRUE\nORDER BY\n  t.scheduled_date",
+  "timestamp" : "2025-12-15T15:58:41.217091",
+  "normalizedSql" : "SELECT T.SCHEDULED_DATE, T.POINTS AS POINTS_SCORED FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` AS T WHERE T.FULL_NAME = '' AND T.SEASON = # AND T.PLAYED = TRUE ORDER BY T.SCHEDULED_DATE"
+}, {
+  "query" : "Show the bar chart of average points per game for Jordan Howard across all games in season 2014-2015 he played.",
+  "analysis" : {
+    "resultStats" : {
+      "primaryMetricMin" : 13.411764705882355,
+      "primaryMetricAvg" : 13.411764705882355,
+      "primaryMetric" : "average_points",
+      "primaryDimensionCardinality" : 1,
+      "primaryMetricNonNegative" : true,
+      "numericColumns" : [ "average_points" ],
+      "columnCount" : 2,
+      "rowCountBucket" : "tiny",
+      "categoricalColumns" : [ "player_name" ],
+      "primaryMetricMax" : 13.411764705882355,
+      "topDimensionValues" : [ "Jordan Howard" ],
+      "primaryDimension" : "player_name",
+      "rowCount" : 1,
+      "hasTemporalDimension" : false,
+      "topMetricRows" : [ {
+        "category" : "Jordan Howard",
+        "value" : 13.411764705882355
+      } ],
+      "bottomMetricRows" : [ {
+        "category" : "Jordan Howard",
+        "value" : 13.411764705882355
+      } ]
+    },
+    "responseTemplate" : {
+      "insights" : [ "Jordan Howard leads with 13.41" ],
+      "chartType" : "bar",
+      "intentLabel" : "comparison",
+      "templateId" : "comparison_bar",
+      "explanation" : "Bars show how each Player Name ranks based on Average Points. 1 rows total.",
+      "headline" : "Comparing Average Points by Player Name"
+    },
+    "selectedChartType" : "bar",
+    "intent" : {
+      "primaryIntent" : "comparison",
+      "chartTypeScores" : {
+        "bar" : 230.0,
+        "bubble" : 0.0,
+        "pie" : 115.0,
+        "line" : 0.0,
+        "table" : 0.1
+      },
+      "preferredChartType" : "bar",
+      "confidence" : 1.0,
+      "explicitChartType" : "bar",
+      "explicitRequest" : true,
+      "sqlAnalysis" : {
+        "groupByColumnCount" : 1,
+        "hasLimit" : false,
+        "hasAggregation" : true,
+        "hasTemporalGrouping" : false,
+        "groupByColumns" : [ "player_name" ]
+      }
+    },
+    "normalizedSql" : "SELECT FULL_NAME AS PLAYER_NAME, AVG(POINTS) AS AVERAGE_POINTS FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` WHERE FULL_NAME = '' AND SEASON = # AND PLAYED = TRUE GROUP BY PLAYER_NAME"
+  },
+  "results" : {
+    "columnTypes" : [ "STRING", "FLOAT64" ],
+    "columns" : [ "player_name", "average_points" ],
+    "truncated" : false,
+    "rowCount" : 1,
+    "columnCount" : 2,
+    "rows" : [ [ "Jordan Howard", "13.411764705882355" ] ]
+  },
+  "sql" : "SELECT\n  full_name AS player_name,\n  AVG(points) AS average_points\nFROM\n  `bigquery-public-data.ncaa_basketball.mbb_players_games_sr`\nWHERE\n  full_name = 'Jordan Howard'\n  AND season = 2014\n  AND played = TRUE\nGROUP BY\n  player_name",
+  "timestamp" : "2025-12-15T15:59:10.830234",
+  "normalizedSql" : "SELECT FULL_NAME AS PLAYER_NAME, AVG(POINTS) AS AVERAGE_POINTS FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` WHERE FULL_NAME = '' AND SEASON = # AND PLAYED = TRUE GROUP BY PLAYER_NAME"
+}, {
+  "query" : "Show the bar chart of 3 pointers per game for Jordan Howard across all games in season 2014-2015 he played.",
+  "analysis" : {
+    "resultStats" : {
+      "primaryMetricMin" : 0.0,
+      "primaryMetricAvg" : 2.264705882352941,
+      "primaryMetric" : "three_points_made",
+      "primaryDimensionCardinality" : 33,
+      "primaryMetricNonNegative" : true,
+      "numericColumns" : [ "three_points_made" ],
+      "columnCount" : 2,
+      "rowCountBucket" : "medium",
+      "categoricalColumns" : [ "game_date" ],
+      "primaryMetricMax" : 6.0,
+      "topDimensionValues" : [ "2014-12-06", "2014-11-15", "2014-11-22", "2014-12-30", "2015-02-21" ],
+      "primaryDimension" : "game_date",
+      "rowCount" : 36,
+      "hasTemporalDimension" : true,
+      "topMetricRows" : [ {
+        "category" : "2015-02-17",
+        "value" : 6.0
+      }, {
+        "category" : "2014-11-22",
+        "value" : 5.0
+      }, {
+        "category" : "2015-02-04",
+        "value" : 5.0
+      }, {
+        "category" : "2015-03-08",
+        "value" : 5.0
+      }, {
+        "category" : "2014-11-15",
+        "value" : 4.0
+      } ],
+      "bottomMetricRows" : [ {
+        "category" : "2014-11-15",
+        "value" : 0.0
+      }, {
+        "category" : "2014-11-22",
+        "value" : 0.0
+      }, {
+        "category" : "2014-12-03",
+        "value" : 0.0
+      }, {
+        "category" : "2014-12-06",
+        "value" : 0.0
+      }, {
+        "category" : "2014-12-16",
+        "value" : 0.0
+      } ]
+    },
+    "responseTemplate" : {
+      "insights" : [ "2015-02-17 leads with 6.00", "2014-11-22 leads with 5.00", "2015-02-04 leads with 5.00" ],
+      "chartType" : "bar",
+      "intentLabel" : "comparison",
+      "templateId" : "comparison_bar",
+      "explanation" : "Bars show how each Game Date ranks based on Three Points Made. 36 rows total.",
+      "headline" : "Comparing Three Points Made by Game Date"
+    },
+    "selectedChartType" : "bar",
+    "intent" : {
+      "primaryIntent" : "comparison",
+      "chartTypeScores" : {
+        "bar" : 115.0,
+        "bubble" : 0.0,
+        "pie" : 0.0,
+        "line" : 30.0,
+        "table" : 75.1
+      },
+      "preferredChartType" : "bar",
+      "confidence" : 1.0,
+      "explicitChartType" : "bar",
+      "explicitRequest" : true,
+      "sqlAnalysis" : {
+        "groupByColumnCount" : 0,
+        "hasLimit" : false,
+        "hasAggregation" : false,
+        "hasTemporalGrouping" : false,
+        "groupByColumns" : [ ]
+      }
+    },
+    "normalizedSql" : "SELECT SCHEDULED_DATE AS GAME_DATE, THREE_POINTS_MADE FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` WHERE FULL_NAME = '' AND SEASON = # AND PLAYED = TRUE ORDER BY SCHEDULED_DATE"
+  },
+  "results" : {
+    "columnTypes" : [ "DATE", "INT64" ],
+    "columns" : [ "game_date", "three_points_made" ],
+    "truncated" : false,
+    "rowCount" : 36,
+    "columnCount" : 2,
+    "rows" : [ [ "2014-11-15", "0" ], [ "2014-11-15", "4" ], [ "2014-11-16", "2" ], [ "2014-11-19", "1" ], [ "2014-11-22", "0" ], [ "2014-11-22", "5" ], [ "2014-11-26", "3" ], [ "2014-11-29", "4" ], [ "2014-12-02", "2" ], [ "2014-12-03", "0" ], [ "2014-12-06", "0" ], [ "2014-12-06", "3" ], [ "2014-12-12", null ], [ "2014-12-16", "0" ], [ "2014-12-18", "2" ], [ "2014-12-21", "3" ], [ "2014-12-30", "0" ], [ "2015-01-04", "2" ], [ "2015-01-07", "1" ], [ "2015-01-11", "2" ], [ "2015-01-14", "0" ], [ "2015-01-20", "2" ], [ "2015-01-24", "2" ], [ "2015-01-27", "2" ], [ "2015-02-04", "5" ], [ "2015-02-07", "1" ], [ "2015-02-11", "4" ], [ "2015-02-14", "3" ], [ "2015-02-17", "6" ], [ "2015-02-21", "1" ], [ "2015-02-25", "3" ], [ "2015-02-28", "4" ], [ "2015-03-03", "2" ], [ "2015-03-06", "3" ], [ "2015-03-07", null ], [ "2015-03-08", "5" ] ]
+  },
+  "sql" : "SELECT\n  scheduled_date AS game_date,\n  three_points_made\nFROM\n  `bigquery-public-data.ncaa_basketball.mbb_players_games_sr`\nWHERE\n  full_name = 'Jordan Howard'\n  AND season = 2014\n  AND played = TRUE\nORDER BY\n  scheduled_date",
+  "timestamp" : "2025-12-15T15:59:45.466506",
+  "normalizedSql" : "SELECT SCHEDULED_DATE AS GAME_DATE, THREE_POINTS_MADE FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` WHERE FULL_NAME = '' AND SEASON = # AND PLAYED = TRUE ORDER BY SCHEDULED_DATE"
+}, {
+  "query" : "Show the bar chart of 3 pointers per game for Jordan Howard across all games in season 1990-2000 he played.",
+  "analysis" : {
+    "resultStats" : {
+      "primaryMetricMin" : null,
+      "primaryMetricAvg" : null,
+      "primaryMetric" : null,
+      "primaryDimensionCardinality" : 0,
+      "primaryMetricNonNegative" : true,
+      "numericColumns" : [ ],
+      "columnCount" : 0,
+      "rowCountBucket" : "empty",
+      "categoricalColumns" : [ ],
+      "primaryMetricMax" : null,
+      "topDimensionValues" : [ ],
+      "primaryDimension" : null,
+      "rowCount" : 0,
+      "hasTemporalDimension" : false,
+      "topMetricRows" : [ ],
+      "bottomMetricRows" : [ ]
+    },
+    "responseTemplate" : {
+      "insights" : [ ],
+      "chartType" : "table",
+      "intentLabel" : "table",
+      "templateId" : "table_default",
+      "explanation" : "Showing 0 rows and 0 columns.",
+      "headline" : "Detailed table results"
+    },
+    "selectedChartType" : "table",
+    "intent" : {
+      "primaryIntent" : "comparison",
+      "chartTypeScores" : {
+        "bar" : 200.0,
+        "bubble" : 0.0,
+        "pie" : 0.0,
+        "line" : 0.0,
+        "table" : 50.1
+      },
+      "preferredChartType" : "bar",
+      "confidence" : 1.0,
+      "explicitChartType" : "bar",
+      "explicitRequest" : true,
+      "sqlAnalysis" : {
+        "groupByColumnCount" : 0,
+        "hasLimit" : true,
+        "hasAggregation" : false,
+        "hasTemporalGrouping" : false,
+        "groupByColumns" : [ ]
+      }
+    },
+    "normalizedSql" : "SELECT SCHEDULED_DATE AS GAME_DATE, THREE_POINTS_MADE FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` WHERE FULL_NAME = '' AND SEASON BETWEEN # AND # AND PLAYED = TRUE ORDER BY GAME_DATE LIMIT #"
+  },
+  "results" : {
+    "columnTypes" : [ "DATE", "INT64" ],
+    "columns" : [ "game_date", "three_points_made" ],
+    "truncated" : false,
+    "rowCount" : 0,
+    "columnCount" : 2,
+    "rows" : [ ]
+  },
+  "sql" : "SELECT\n  scheduled_date AS game_date,\n  three_points_made\nFROM\n  `bigquery-public-data.ncaa_basketball.mbb_players_games_sr`\nWHERE\n  full_name = 'Jordan Howard'\n  AND season BETWEEN 1990\n  AND 2000\n  AND played = TRUE\nORDER BY\n  game_date\nLIMIT 100",
+  "timestamp" : "2025-12-15T16:21:24.879335",
+  "normalizedSql" : "SELECT SCHEDULED_DATE AS GAME_DATE, THREE_POINTS_MADE FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` WHERE FULL_NAME = '' AND SEASON BETWEEN # AND # AND PLAYED = TRUE ORDER BY GAME_DATE LIMIT #"
 } ]
