@@ -2859,4 +2859,98 @@
   "sql" : "SELECT\n  scheduled_date AS game_date,\n  three_points_made\nFROM\n  `bigquery-public-data.ncaa_basketball.mbb_players_games_sr`\nWHERE\n  full_name = 'Jordan Howard'\n  AND season BETWEEN 1990\n  AND 2000\n  AND played = TRUE\nORDER BY\n  game_date\nLIMIT 100",
   "timestamp" : "2025-12-15T16:21:24.879335",
   "normalizedSql" : "SELECT SCHEDULED_DATE AS GAME_DATE, THREE_POINTS_MADE FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_PLAYERS_GAMES_SR` WHERE FULL_NAME = '' AND SEASON BETWEEN # AND # AND PLAYED = TRUE ORDER BY GAME_DATE LIMIT #"
+}, {
+  "query" : "Show a table comparing average points per game by season for the top 4 scoring teams in 2015 across seasons 2013 to 2017.",
+  "analysis" : {
+    "resultStats" : {
+      "primaryMetricMin" : 64.0,
+      "primaryMetricAvg" : 77.39176868162595,
+      "primaryMetric" : "avg_points_per_game",
+      "primaryDimensionCardinality" : 4,
+      "primaryMetricNonNegative" : true,
+      "numericColumns" : [ "season", "avg_points_per_game" ],
+      "columnCount" : 3,
+      "rowCountBucket" : "medium",
+      "categoricalColumns" : [ "team_name" ],
+      "primaryMetricMax" : 94.0,
+      "topDimensionValues" : [ "Thundering Herd", "Generals", "Golden Grizzlies", "Maroons" ],
+      "primaryDimension" : "team_name",
+      "rowCount" : 17,
+      "hasTemporalDimension" : true,
+      "topMetricRows" : [ {
+        "category" : "Maroons",
+        "value" : 94.0
+      }, {
+        "category" : "Golden Grizzlies",
+        "value" : 86.37142857142858
+      }, {
+        "category" : "Thundering Herd",
+        "value" : 85.99999999999999
+      }, {
+        "category" : "Thundering Herd",
+        "value" : 85.62857142857143
+      }, {
+        "category" : "Generals",
+        "value" : 85.5
+      } ],
+      "bottomMetricRows" : [ {
+        "category" : "Generals",
+        "value" : 64.0
+      }, {
+        "category" : "Generals",
+        "value" : 66.0
+      }, {
+        "category" : "Thundering Herd",
+        "value" : 66.78125
+      }, {
+        "category" : "Generals",
+        "value" : 71.6
+      }, {
+        "category" : "Thundering Herd",
+        "value" : 72.2727272727273
+      } ]
+    },
+    "responseTemplate" : {
+      "insights" : [ ],
+      "chartType" : "table",
+      "intentLabel" : "table",
+      "templateId" : "table_default",
+      "explanation" : "Showing 17 rows and 3 columns.",
+      "headline" : "Detailed table results"
+    },
+    "selectedChartType" : "table",
+    "intent" : {
+      "primaryIntent" : "comparison",
+      "chartTypeScores" : {
+        "bar" : 235.0,
+        "bubble" : 5.0,
+        "pie" : 80.0,
+        "line" : 30.0,
+        "table" : 100.0
+      },
+      "preferredChartType" : "bar",
+      "confidence" : 1.0,
+      "explicitChartType" : "table",
+      "explicitRequest" : true,
+      "sqlAnalysis" : {
+        "groupByColumnCount" : 1,
+        "hasLimit" : true,
+        "hasAggregation" : true,
+        "hasTemporalGrouping" : false,
+        "groupByColumns" : [ "name" ]
+      }
+    },
+    "normalizedSql" : "WITH TOP_2015_TEAMS AS ( SELECT NAME FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_TEAMS_GAMES_SR` WHERE SEASON = # GROUP BY NAME ORDER BY AVG(POINTS_GAME) DESC LIMIT # ) SELECT T.NAME AS TEAM_NAME, T.SEASON, AVG(T.POINTS_GAME) AS AVG_POINTS_PER_GAME FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_TEAMS_GAMES_SR` AS T WHERE T.SEASON BETWEEN # AND # AND T.NAME IN (SELECT NAME FROM TOP_2015_TEAMS) GROUP BY TEAM_NAME, SEASON ORDER BY TEAM_NAME, SEASON;"
+  },
+  "results" : {
+    "columnTypes" : [ "STRING", "INT64", "FLOAT64" ],
+    "columns" : [ "team_name", "season", "avg_points_per_game" ],
+    "truncated" : false,
+    "rowCount" : 17,
+    "columnCount" : 3,
+    "rows" : [ [ "Generals", "2013", "64.0" ], [ "Generals", "2014", "71.6" ], [ "Generals", "2015", "85.5" ], [ "Generals", "2016", "73.5" ], [ "Generals", "2017", "66.0" ], [ "Golden Grizzlies", "2013", "74.393939393939391" ], [ "Golden Grizzlies", "2014", "74.242424242424235" ], [ "Golden Grizzlies", "2015", "86.371428571428581" ], [ "Golden Grizzlies", "2016", "79.382352941176492" ], [ "Golden Grizzlies", "2017", "78.181818181818159" ], [ "Maroons", "2013", "74.0" ], [ "Maroons", "2015", "94.0" ], [ "Thundering Herd", "2013", "72.2727272727273" ], [ "Thundering Herd", "2014", "66.78125" ], [ "Thundering Herd", "2015", "85.999999999999986" ], [ "Thundering Herd", "2016", "85.628571428571433" ], [ "Thundering Herd", "2017", "83.805555555555571" ] ]
+  },
+  "sql" : "WITH top_2015_teams AS (\n  SELECT\n    name\n  FROM\n    `bigquery-public-data.ncaa_basketball.mbb_teams_games_sr`\n  WHERE\n    season = 2015\n  GROUP BY\n    name\n  ORDER BY\n    AVG(points_game) DESC\n  LIMIT 4\n)\nSELECT\n  t.name AS team_name,\n  t.season,\n  AVG(t.points_game) AS avg_points_per_game\nFROM\n  `bigquery-public-data.ncaa_basketball.mbb_teams_games_sr` AS t\nWHERE\n  t.season BETWEEN 2013 AND 2017\n  AND t.name IN (SELECT name FROM top_2015_teams)\nGROUP BY\n  team_name,\n  season\nORDER BY\n  team_name,\n  season;",
+  "timestamp" : "2026-01-09T12:46:47.904218",
+  "normalizedSql" : "WITH TOP_2015_TEAMS AS ( SELECT NAME FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_TEAMS_GAMES_SR` WHERE SEASON = # GROUP BY NAME ORDER BY AVG(POINTS_GAME) DESC LIMIT # ) SELECT T.NAME AS TEAM_NAME, T.SEASON, AVG(T.POINTS_GAME) AS AVG_POINTS_PER_GAME FROM `BIGQUERY-PUBLIC-DATA.NCAA_BASKETBALL.MBB_TEAMS_GAMES_SR` AS T WHERE T.SEASON BETWEEN # AND # AND T.NAME IN (SELECT NAME FROM TOP_2015_TEAMS) GROUP BY TEAM_NAME, SEASON ORDER BY TEAM_NAME, SEASON;"
 } ]
